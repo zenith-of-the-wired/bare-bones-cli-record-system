@@ -39,7 +39,7 @@ struct Product{
     int day;
     MONTHS month;
     int distributedGallons;
-    double priceUnpaid;
+    double totalPriceUnpaid;
     int waterBottleBatchQty;
     int sales;
 };
