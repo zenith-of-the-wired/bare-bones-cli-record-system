@@ -40,7 +40,6 @@ struct Customer{
     int phoneNumber;
     int gallonsOwnedQty;
     int lastDayBought;
-    double priceToPay;
     PAYMENT_STATUS paymentStatus;
 };
 
@@ -48,7 +47,6 @@ struct Product{
     int tankStorage;
     int year;
     int day;
-    MONTHS month;
     int sales;
     int distributedGallonQty;
     int iceBagBatchQty;
@@ -56,6 +54,7 @@ struct Product{
     string gallonType;
     string iceBagType;
     string bottledWaterType;
+    MONTHS month;
 };
 
 struct Employee{
@@ -66,106 +65,99 @@ struct Employee{
     SEX sex;
 };
 
-void MainMenu(); // so that other functions can also call MainMenu, because they are defined before it.
+void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeInfo, int &custPrevI, int &prodPrevI, int &empPrevI); // so that other functions can also call MainMenu, because they are defined before it.
 
-void PeopleInfo()
+void CustomerManagement(Customer customerInfo[], int &prevI)
 {
-
-}
-
-void CustomerInfo()
-{
-
-}
-
-void CustomerUpdates()
-{
-
-}
-
-void PaymentStatus()
-{
-
-}
-
-void GallonOwnership()
-{
-
-}
-
-void LatestTransactionDate()
-{
-
-}
-
-void CustomerManagement()
-{
-    int choice;
+    Customer tempInfo[25];
+    int choice, i, size;
 
     do
     {
         cout<<"-----=====---===   Customer Records   ===---=====-----"
-            <<"\n"<<setw(21)<<"[1] Customers"<<setw(26)<<"[3] Gallon Ownership"
-            <<"\n"<<setw(26)<<"[2] Payment Status"<<setw(28)<<"[4] Latest Transaction Date"
-            <<"\n"<<setw(40)<<"[5] Return to Main Menu"<<endl;
+            <<"\n"<<setw(26)<<"[1] Add Customers"<<setw(26)<<"[2] Display Customer Data"
+            <<"\n"<<setw(26)<<"[3] Update Customer Data"<<setw(40)<<"[4] Return to Main Menu"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----";
         cout<<"\nInput: ";
         cin>>choice;
+        cin.clear();
         cin.ignore();
 
         switch(choice)
         {
             case 1:
-                return CustomerInfo();
+                cout<<"-----=====---===-=  Adding Records  =-===---=====-----"
+                    <<"\nEnter amount of customers: ";
+                cin>>size;
+                cin.clear();
+                cin.ignore();
+
+                while (size <= 0) // simple input error handling
+                {
+                    cout<<"-----=====-----=====-----=====-----=====-----=====-----"
+                        <<"\n"<<setw(39)<<"Invalid amount! Try again."
+                        <<"\nEnter amount of customers: ";
+                    cin>>size;
+                    cin.clear();
+                    cin.ignore();
+                }
+
+                for (i = 0; i < size; i++)
+                {
+                    cout<<"-----=====-----=====-----=====-----=====-----=====-----"
+                        <<"\n"<<setw(34)<<"Customer Record #"<<i + prevI + 1
+                        <<"\nEnter customer's full name: ";
+                    getline(cin, tempInfo[i].fullName);
+
+                    cout<<"Enter customer's address: ";
+                    cin>>tempInfo[i].address;
+                    
+                    cout<<"Enter customer's phone number: ";
+                    cin>>tempInfo[i].phoneNumber;
+                    
+                    cout<<"Enter how many gallons the customer owns: ";
+                    cin>>tempInfo[i].gallonsOwnedQty;
+                    cin.ignore();
+
+                    customerInfo[i + prevI].fullName = tempInfo[i].fullName;
+                    customerInfo[i + prevI].address = tempInfo[i].address;
+                    customerInfo[i + prevI].phoneNumber = tempInfo[i].phoneNumber;
+                    customerInfo[i + prevI].gallonsOwnedQty = tempInfo[i].gallonsOwnedQty;
+                }
+                prevI += i;
+
                 break;
             case 2:
-                return PaymentStatus();
+                do
+                {
+                    cout<<"-----=====---===   Customer Records   ===---=====-----"
+                    <<"\n"<<setw(5)<<"#"<<setw(20)<<"Name"<<setw(20)<<"Address"<<setw(20)<<"Phone No."<<endl;
+                    for (i = 0; i < prevI; i++)
+                    {
+                        cout<<i+1<<setw(5)
+                            <<customerInfo[i].fullName<<setw(30)
+                            <<customerInfo[i].address<<setw(30)
+                            <<customerInfo[i].phoneNumber<<setw(30)
+                            <<customerInfo[i].gallonsOwnedQty<<endl;
+                    }
+                    cout<<"-----=====-----=====-----=====-----=====-----=====-----"
+                        <<"\n[1] Back"
+                        <<"\nInput: ";
+                    cin>>choice;
+                    cin.ignore();
+
+                } while (choice != 1);
                 break;
             case 3:
-                return GallonOwnership();
+                
                 break;
             case 4:
-                return LatestTransactionDate();
-                break;
-            case 5:
-                return MainMenu();
                 break;
             default:
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----"<<endl;
                 cout<<setw(41)<<"Try again! Choice not found."<<endl;
         }
-
-    } while (choice != 5);
-}
-
-void ProductUpdates()
-{
-
-}
-
-void MaintenanceRecord()
-{
-
-}
-
-void DistributedGallons()
-{
-
-}
-
-void TotalPriceUnpaid()
-{
-    double totalPriceUnpaid;
-}
-
-void BottledWaterStorage()
-{
-    
-}
-
-void IceBagStorage()
-{
-    
+    } while (choice != 4);
 }
 
 void ProductManagement()
@@ -175,9 +167,7 @@ void ProductManagement()
     do
     {
         cout<<"-----=====---===   Product Management  ===---=====-----"
-            <<"\n"<<setw(27)<<"[1] Maintenance Record"<<setw(26)<<"[4] Water Bottle Storage"
-            <<"\n"<<setw(28)<<"[2] Distributed Gallons"<<setw(20)<<"[5] Ice Bag Storage"
-            <<"\n"<<setw(27)<<"[3] Total Price Unpaid"<<setw(25)<<"[6] Return to Main Menu"<<endl;
+            <<"\n"<<setw(27)<<"[0] Empty for "<<"\n[1] Now"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----";
         cout<<"\nInput: ";
         cin>>choice;
@@ -186,22 +176,10 @@ void ProductManagement()
         switch(choice)
         {
             case 1:
-                MaintenanceRecord();
+
                 break;
             case 2:
-                DistributedGallons();
-                break;
-            case 3: 
-                TotalPriceUnpaid();
-                break;
-            case 4: 
-                BottledWaterStorage();
-                break;
-            case 5: 
-                IceBagStorage;
-                break;
-            case 6:
-                MainMenu();
+
             default:
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----"<<endl;
                 cout<<setw(41)<<"Try again! Choice not found."<<endl;
@@ -209,21 +187,6 @@ void ProductManagement()
         }
 
     } while (choice != 6);
-}
-
-void EmployeeUpdates()
-{
-
-}
-
-void EmployeeInfo()
-{
-
-}
-
-void BusinessInfo()
-{
-
 }
 
 void EmployeeManagement()
@@ -239,18 +202,19 @@ void EmployeeManagement()
         cout<<"-----=====-----=====-----=====-----=====-----=====-----";
         cout<<"\nInput: ";
         cin>>choice;
+        cin.clear();
         cin.ignore();
 
         switch(choice)
         {
             case 1:
-                return EmployeeInfo();
+
                 break;
             case 2:
-                return BusinessInfo();
+
                 break;
             case 3:
-                return MainMenu();
+                
                 break;
             default:
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----"<<endl;
@@ -261,7 +225,7 @@ void EmployeeManagement()
     } while (choice != 3);
 }
 
-void MainMenu()
+void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeInfo[], int &custPrevI, int &prodPrevI, int &empPrevI)
 {
     int choice;
 
@@ -275,18 +239,19 @@ void MainMenu()
         cout<<"-----=====-----=====-----=====-----=====-----=====-----";
         cout<<"\nInput: ";
         cin>>choice;
+        cin.clear();
         cin.ignore();
 
         switch(choice)
         {
             case 1:
-                return ProductManagement();
+                ProductManagement();
                 break;
             case 2:
-                return CustomerManagement();
+                CustomerManagement(customerInfo, custPrevI);
                 break;
             case 3:
-                return EmployeeManagement();
+                EmployeeManagement();
                 break;
             case 4:
             cout<<"-----=====-----=====-----=====-----=====-----=====-----"
@@ -303,5 +268,13 @@ void MainMenu()
 
 int main()
 {
-    MainMenu();
+    Customer customerInformation[50]; // declare all struct/variables/arrays here so all of the value/data persists even if functions end, only does it stop persisting after the program ends.
+    Product productInformation[50];
+    Employee employeeInfromation[50];
+
+    int customerPrevI, productPrevI, employeePrevI;
+
+    MainMenu(customerInformation, productInformation, employeeInfromation, customerPrevI, productPrevI, employeePrevI);
+
+    return EXIT_SUCCESS;
 }
