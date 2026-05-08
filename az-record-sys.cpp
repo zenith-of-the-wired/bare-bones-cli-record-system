@@ -586,7 +586,17 @@ void ProductManagement()
 
 }
 
-void AddEmployeeInfo(Employee employeeInfo[], int &prevI, int &size, int &sex, int &role)
+void EmployeeOriginalCopy(Employee employeeInfo[], Employee tempInfo[], int &prevI)
+{
+    int i;
+
+    for (i = 0; i < prevI; i++)
+    {
+        tempInfo[i] = employeeInfo[i];
+    }
+}
+
+void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, int &size, int &sex, int &role)
 {
     int i, choice;
 
@@ -612,7 +622,7 @@ void AddEmployeeInfo(Employee employeeInfo[], int &prevI, int &size, int &sex, i
                     employeeInfo[i].employeeRecordNum =  i + prevI + 1;
                     
                     cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                        <<setw(59)<<right<<"Employee Record #"<<i + prevI + 1
+                        <<setw(59)<<right<<"Employee Record #"<<employeeInfo[i].employeeRecordNum
                         <<"\nEnter employee's surname: ";
                     getline(cin, employeeInfo[i + prevI].lastName);
 
@@ -669,6 +679,8 @@ void AddEmployeeInfo(Employee employeeInfo[], int &prevI, int &size, int &sex, i
                                 break;
                         }
                     } while (role != 1 && role != 2);
+
+                    EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
                 }
 
                 prevI += i; 
@@ -677,7 +689,49 @@ void AddEmployeeInfo(Employee employeeInfo[], int &prevI, int &size, int &sex, i
                     <<setw(71)<<right<<"Employee Record(s) Added Successfully!"<<endl;
 }
 
-void DisplayEmployeeInfo(Employee employeeInfo[], int &prevI)
+void SortEmpDesLastName(Employee employeeInfo[], Employee tempInfo[], int &prevI)
+{
+    int x, y;
+    Employee temp;
+
+    EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
+
+    for (x = 0; x < prevI - 1; x++)
+    {
+        for (y = 0; y < prevI - 1 - x; y++)
+        {
+            if(employeeInfo[y].lastName < employeeInfo[y + 1].lastName)
+            {
+                temp = employeeInfo[y];
+                employeeInfo[y] = employeeInfo[y + 1];
+                employeeInfo[y + 1] = temp;
+            }
+        }
+    } 
+}
+
+void SortEmpAscLastName(Employee employeeInfo[], Employee tempInfo[], int &prevI)
+{
+    int x, y;
+    Employee temp;
+
+    EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
+
+    for (x = 0; x < prevI - 1; x++)
+    {
+        for (y = 0; y < prevI - 1 - x; y++)
+        {
+            if(employeeInfo[y].lastName > employeeInfo[y + 1].lastName)
+            {
+                temp = employeeInfo[y];
+                employeeInfo[y] = employeeInfo[y + 1];
+                employeeInfo[y + 1] = temp;
+            }
+        }
+    } 
+}
+
+void DisplayEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI)
 {
     int i, choice;
 
@@ -698,7 +752,7 @@ void DisplayEmployeeInfo(Employee employeeInfo[], int &prevI)
 
         for (i = 0; i < prevI; i++)
         {
-            cout<<setw(6)<<left<<i+1
+            cout<<setw(6)<<left<<employeeInfo[i].employeeRecordNum
                 <<setw(10)<<left<<employeeInfo[i].lastName
                 <<setw(16)<<left<<employeeInfo[i].firstName
                 <<setw(5)<<left<<employeeInfo[i].middleInitial
@@ -738,10 +792,10 @@ void DisplayEmployeeInfo(Employee employeeInfo[], int &prevI)
             cout<<setw(57)<<right<<"Returning..."<<endl;
             break;
         case 2:
-
+            SortEmpAscLastName(employeeInfo, tempInfo, prevI);
             break;
         case 3:
-
+            SortEmpDesLastName(employeeInfo, tempInfo, prevI);
             break;
         default:
             RetryStyle();
@@ -1018,14 +1072,14 @@ void EmployeeManagement(Employee employeeInfo[], Employee tempInfo[], int &prevI
         cin.clear();
         cin.ignore();
         cout<<"---------------------------------------------------------------------------------------------------------\n";
-        
+
         switch(choice)
         {
             case 1:
-                AddEmployeeInfo(employeeInfo, prevI, size, sex, role);
+                AddEmployeeInfo(employeeInfo, tempInfo, prevI, size, sex, role);
                 break;
             case 2:
-                DisplayEmployeeInfo(employeeInfo, prevI);
+                DisplayEmployeeInfo(employeeInfo, tempInfo, prevI);
                 break;
             case 3:
                 EmployeeUpdateParent(employeeInfo, prevI, sex, role);
