@@ -70,7 +70,9 @@ void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeI
 void CustomerManagement(Customer customerInfo[], int &prevI)
 {
     Customer tempInfo[25];
-    int choice, i, size, paymentStatus;
+    int choice, choice2, i, size, paymentStatus;
+    string search;
+    bool validation, found;
 
     do
     {
@@ -209,13 +211,94 @@ void CustomerManagement(Customer customerInfo[], int &prevI)
                     cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
                         <<"\n[1] Back\n"
                         <<setw(53)<<right<<"Input: ";
-                    cin>>choice;
+                    cin>>choice2;
                     cin.ignore();
 
-                } while (choice != 1);
+                } while (choice2 != 1);
                 break;
             case 3:
-                
+                do
+                {
+                    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                        <<setw(65)<<right<<"| Select Field to Update |"
+                        <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                        <<setw(70)<<right<<"[1] Customer Name/Address/Phone\n"
+                        <<setw(80)<<right<<"[2] Gallon Ownership & Latest Transaction\n"
+                        <<setw(57)<<right<<"[3] Payment Status\n"
+                        <<setw(46)<<right<<"[4] Back"<<endl;
+                    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                        <<setw(53)<<right<<"Input: ";
+                    cin>>choice2;
+                    cin.clear();
+                    cin.ignore();
+
+                    switch (choice2)
+                    {
+                        case 1:
+                            do
+                            {
+                                found = false;
+
+                                cout<<"Enter customer's name to update data (1 - Cancel): ";
+                                getline(cin, search);
+                                
+                                if (search == "1")
+                                {
+                                    found = true;
+                                }
+
+                                for (i = 0; i < prevI; i++)
+                                {   
+                                    if (search == customerInfo[i].fullName)
+                                    {   
+                                        found = true;
+                                        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                                            <<setw(61)<<"Data you're about to update:\n"
+                                            <<setw(6)<<left<<"#"<<setw(30)<<left<<"Full Name"<<setw(30)<<left<<"Address"<<setw(13)<<left<<"Phone No."
+                                            <<"\n---------------------------------------------------------------------------------------------------------\n"
+                                            <<setw(6)<<left<<i+1<<setw(30)<<left<<customerInfo[i].fullName<<setw(30)<<left<<customerInfo[i].address<<setw(13)<<left<<customerInfo[i].phoneNumber
+                                            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
+
+                                        cout<<"Enter updated name: ";
+                                        getline(cin, customerInfo[i].fullName);
+
+                                        cout<<"Enter updated address: ";
+                                        getline(cin, customerInfo[i].address);
+
+                                        cout<<"Enter updated phone number: ";
+                                        getline(cin, customerInfo[i].phoneNumber);
+                                    }
+                                }
+
+                                if (found == true)
+                                {
+                                    cout<<"---------------------------------------------------------------------------------------------------------\n"
+                                        <<"Customer record updated!"<<endl;
+                                }
+                                    else
+                                    {
+                                        cout<<"---------------------------------------------------------------------------------------------------------\n"
+                                            <<"Customer record not found!"<<endl;
+                                    }
+                                
+                            } while (found == false);
+                            break;
+                        case 2:
+                        
+                            break;
+                        case 3:
+                        
+                            break;
+                        case 4:
+                            cout<<"---------------------------------------------------------------------------------------------------------\n"
+                                <<setw(57)<<right<<"Returning..."<<endl;
+                            break;
+                        default:
+                            cout<<"---------------------------------------------------------------------------------------------------------\n"
+                                <<setw(66)<<right<<"Try again. Choice not Found."<<endl;
+                            break;  
+                    }
+                } while (choice2 != 4);
                 break;
             case 4:
                 break;
@@ -322,9 +405,9 @@ void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeI
                 EmployeeManagement();
                 break;
             case 4:
-            cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                <<setw(35)<<"See you again!"
-                <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
+            cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                <<setw(58)<<"See you again!"
+                <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
                 break;
             default:
                 cout<<"---------------------------------------------------------------------------------------------------------\n"
