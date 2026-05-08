@@ -4,7 +4,7 @@
 
 using namespace std;
 
-enum POSITION{
+enum ROLE{
     DRIVER,
     REFILLER
 };
@@ -35,6 +35,7 @@ enum PAYMENT_STATUS{
 };
 
 struct Customer{
+    int customerRecordNum;
     string firstName;
     string lastName;
     string middleInitial;
@@ -60,14 +61,243 @@ struct Product{
 };
 
 struct Employee{
-    string fullName;
+    string firstName;
+    string lastName;
+    string middleInitial;
     string address;
-    int phoneNumber;
-    POSITION position;
+    string phoneNumber;
+    ROLE position;
     SEX sex;
 };
 
-void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeInfo, int &custPrevI, int &prodPrevI, int &empPrevI); // so that other functions can also call MainMenu, because they are defined before it.
+void RetryAmount()
+{
+    cout<<"---------------------------------------------------------------------------------------------------------\n"
+        <<setw(64)<<right<<"Invalid amount! Try again.\n"
+        <<"---------------------------------------------------------------------------------------------------------";
+}
+
+void RetryStyle()
+{
+    cout<<"---------------------------------------------------------------------------------------------------------\n"
+        <<setw(66)<<right<<"Try again. Choice not Found.\n"
+        <<"---------------------------------------------------------------------------------------------------------"<<endl;
+}
+
+void UpdateConfirmed()
+{
+    cout<<"---------------------------------------------------------------------------------------------------------\n"
+        <<setw(63)<<"Customer record updated!\n"
+        <<"---------------------------------------------------------------------------------------------------------"<<endl;
+}
+
+void RecordSearchFailed()
+{
+    cout<<"---------------------------------------------------------------------------------------------------------\n"
+        <<setw(67)<<"Customer record not found!\n"
+        <<"---------------------------------------------------------------------------------------------------------"<<endl;
+}
+
+void CustomerOriginalCopy(Customer customerInfo[], Customer tempInfo[], int &prevI)
+{
+    int i;
+
+    for (i = 0; i < prevI; i++)
+    {
+        tempInfo[i] = customerInfo[i];
+    }
+}
+
+void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prevI, int &size, int &paymentStatus)
+{
+    int i;
+
+    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                    <<setw(60)<<right<<"| Adding Records |"
+                    <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
+                    <<"\nEnter amount of customers: ";
+                cin>>size;
+                cin.clear();
+                cin.ignore();
+
+                    while (size <= 0)
+                    {
+                        RetryAmount();
+                        cout<<"\nEnter amount of customers: ";
+                        cin>>size;
+                        cin.clear();
+                        cin.ignore();
+                    }
+
+                for (i = 0; i < size; i++)
+                {
+                    customerInfo[i].customerRecordNum =  i + prevI + 1;
+
+                    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                        <<setw(59)<<right<<"Customer Record #"<<customerInfo[i].customerRecordNum
+                        <<"\nEnter customer's surname: ";
+                    getline(cin, customerInfo[i + prevI].lastName);
+
+                    cout<<"Enter customer's first name: ";
+                    getline(cin, customerInfo[i + prevI].firstName);
+
+                    cout<<"Enter customer's middle initial: ";
+                    getline(cin, customerInfo[i + prevI].middleInitial);
+
+                    cout<<"Enter customer's address (brngy & purok): ";
+                    getline(cin, customerInfo[i + prevI].address);
+                    
+                    cout<<"Enter customer's phone number (example: 09112223333): ";
+                    getline(cin, customerInfo[i + prevI].phoneNumber);
+
+                    cout<<"Enter customer gallon ownership (quantity): ";
+                    cin>>customerInfo[i + prevI].gallonsOwnedQty;
+                    cin.clear();
+                    cin.ignore();
+
+                        while (customerInfo[i + prevI].gallonsOwnedQty <= 0)
+                        {
+                            cout<<"---------------------------------------------------------------------------------------------------------\n"
+                                <<setw(65)<<right<<"Invalid quantity! Try again."
+                                <<"\n---------------------------------------------------------------------------------------------------------"
+                                <<"\nEnter how many gallons the customer owns: ";
+                            cin>>customerInfo[i + prevI].gallonsOwnedQty;
+                            cin.clear();
+                            cin.ignore();
+                        }
+
+                    cout<<"Enter latest transaction date (m/dd): ";
+                    getline(cin, customerInfo[i + prevI].latestTransaction);
+
+                    do
+                    {
+                        cout<<"Enter payment status of gallons owned (1 - Paid | 2 - Unpaid): ";
+                        cin>>paymentStatus;
+                        cin.clear();
+                        cin.ignore();
+                        
+                        switch (paymentStatus)
+                        {
+                            case 1:
+                                customerInfo[i + prevI].paymentStatus = PAID;
+                                break;
+                            case 2:
+                                customerInfo[i + prevI].paymentStatus = UNPAID;
+                                break;
+                            default:
+                                RetryStyle();
+                                break;
+                        }
+                    } while (paymentStatus != 1 && paymentStatus != 2);
+
+                    CustomerOriginalCopy(customerInfo, tempInfo, prevI);
+                }
+                prevI += i;
+
+                cout<<"---------------------------------------------------------------------------------------------------------\n"
+                    <<setw(71)<<right<<"Customer Record(s) Added Successfully!"<<endl;
+}
+
+void SortCustDesLastName(Customer customerInfo[], Customer tempInfo[], int &prevI)
+{
+    int x, y;
+    Customer temp;
+
+    CustomerOriginalCopy(customerInfo, tempInfo, prevI);
+
+    for (x = 0; x < prevI - 1; x++)
+    {
+        for (y = 0; y < prevI - 1 - x; y++)
+        {
+            if(customerInfo[y].lastName < customerInfo[y + 1].lastName)
+            {
+                temp = customerInfo[y];
+                customerInfo[y] = customerInfo[y + 1];
+                customerInfo[y + 1] = temp;
+            }
+        }
+    } 
+}
+
+void SortCustAscLastName(Customer customerInfo[], Customer tempInfo[], int &prevI)
+{
+    int x, y;
+    Customer temp;
+
+    CustomerOriginalCopy(customerInfo, tempInfo, prevI);
+
+    for (x = 0; x < prevI - 1; x++)
+    {
+        for (y = 0; y < prevI - 1 - x; y++)
+        {
+            if(customerInfo[y].lastName > customerInfo[y + 1].lastName)
+            {
+                temp = customerInfo[y];
+                customerInfo[y] = customerInfo[y + 1];
+                customerInfo[y + 1] = temp;
+            }
+        }
+    }
+}
+
+void DisplayCusomterInfo(Customer customerInfo[], Customer tempInfo[], int &prevI)
+{
+    int i, choice;
+
+    do
+    {
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(61)<<"| Customer Data |\n"
+            <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(6)<<left<<"#"<<setw(10)<<left<<"Surname"<<setw(16)<<left<<"First Name"<<setw(5)<<left<<"M.I"<<setw(30)<<left<<"Address"<<setw(13)<<left<<"Phone No."<<setw(9)<<left<<"Gallons"<<setw(7)<<left<<"Latest"<<"Status"
+            <<"\n-----|--------|--------------------|-----------------------------|-------------|-------|--------|-------|"<<endl;
+
+        for (i = 0; i < prevI; i++)
+        {
+            cout<<setw(6)<<left<<customerInfo[i].customerRecordNum
+                <<setw(10)<<left<<customerInfo[i].lastName
+                <<setw(16)<<left<<customerInfo[i].firstName
+                <<setw(5)<<left<<customerInfo[i].middleInitial
+                <<setw(30)<<left<<customerInfo[i].address
+                <<setw(13)<<left<<customerInfo[i].phoneNumber
+                <<setw(9)<<left<<customerInfo[i].gallonsOwnedQty
+                <<setw(7)<<left<<customerInfo[i].latestTransaction;
+
+            if (customerInfo[i].paymentStatus == PAID)
+            {
+                cout<<"PAID"<<endl;
+            }
+                else if (customerInfo[i].paymentStatus == UNPAID)
+                {
+                    cout<<"UNPAID"<<endl;
+                }
+        }
+
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
+            <<"\n"<<setw(32)<<right<<"[1] Back"<<setw(30)<<right<<"[2] Sort By Last Name (A-Z)"<<setw(30)<<right<<"[3] Sort By Last Name (Z-A)"
+            <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
+        cout<<setw(53)<<right<<"Input: ";
+        cin>>choice;
+        cin.ignore();
+        cout<<"---------------------------------------------------------------------------------------------------------\n";
+
+        switch (choice)
+        {
+        case 1:
+            cout<<setw(57)<<right<<"Returning..."<<endl;
+            break;
+        case 2:
+            SortCustAscLastName(customerInfo, tempInfo, prevI);
+            break;
+        case 3:
+            SortCustDesLastName(customerInfo, tempInfo, prevI);
+            break;
+        default:
+            RetryStyle();
+            break;
+        }
+    } while (choice != 1);
+}
 
 void CustomerUpdateOption1(Customer customerInfo[], int &prevI, bool &found, string &search)
 {
@@ -82,7 +312,7 @@ void CustomerUpdateOption1(Customer customerInfo[], int &prevI, bool &found, str
         
         if (search == "1")
         {
-            found = true;
+            break;
         }
 
         for (i = 0; i < prevI; i++)
@@ -93,7 +323,7 @@ void CustomerUpdateOption1(Customer customerInfo[], int &prevI, bool &found, str
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
                     <<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(57)<<right<<"Customer #"<<i+1
+                    <<setw(57)<<right<<"Customer #"<<customerInfo[i].customerRecordNum
                     <<"\n"<<setw(46)<<right<<"Surname: "<<customerInfo[i].lastName
                     <<"\n"<<setw(49)<<right<<"First Name: "<<customerInfo[i].firstName
                     <<"\n"<<setw(53)<<right<<"Middle Initial: "<<customerInfo[i].middleInitial
@@ -120,13 +350,11 @@ void CustomerUpdateOption1(Customer customerInfo[], int &prevI, bool &found, str
 
         if (found == true)
         {
-            cout<<"---------------------------------------------------------------------------------------------------------\n"
-                <<setw(63)<<"Customer record updated!"<<endl;
+            UpdateConfirmed();
         }
             else
             {
-                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(67)<<"Customer record not found!"<<endl;
+                RecordSearchFailed();
             }
         
     } while (found == false);
@@ -145,7 +373,7 @@ void CustomerUpdateOption2(Customer customerInfo[], int &prevI, bool &found, str
         
         if (search == "1")
         {
-            found = true;
+            break;
         }
 
         for (i = 0; i < prevI; i++)
@@ -157,7 +385,7 @@ void CustomerUpdateOption2(Customer customerInfo[], int &prevI, bool &found, str
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                 <<setw(67)<<"Data you're about to update:\n"
                 <<"---------------------------------------------------------------------------------------------------------\n"
-                <<setw(57)<<right<<"Customer #"<<i+1
+                <<setw(57)<<right<<"Customer #"<<customerInfo[i].customerRecordNum
                 <<"\n"<<setw(57)<<right<<"Gallons Owned: "<<customerInfo[i].gallonsOwnedQty
                 <<"\n"<<setw(62)<<right<<"Latest Transaction: "<<customerInfo[i].latestTransaction
                 <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
@@ -186,13 +414,11 @@ void CustomerUpdateOption2(Customer customerInfo[], int &prevI, bool &found, str
 
         if (found == true)
         {
-            cout<<"---------------------------------------------------------------------------------------------------------\n"
-                <<setw(63)<<"Customer record updated!"<<endl;
+            UpdateConfirmed();
         }
             else
             {
-                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(67)<<"Customer record not found!"<<endl;
+                RecordSearchFailed();
             }
         
     } while (found == false);
@@ -211,7 +437,7 @@ void CustomerUpdateOption3(Customer customerInfo[], int &prevI, int &paymentStat
         
         if (search == "1")
         {
-            found = true;
+            break;
         }
 
         for (i = 0; i < prevI; i++)
@@ -222,7 +448,7 @@ void CustomerUpdateOption3(Customer customerInfo[], int &prevI, int &paymentStat
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
                     <<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(57)<<right<<"Customer #"<<i+1;
+                    <<setw(57)<<right<<"Customer #"<<customerInfo[i].customerRecordNum;
 
                 if (customerInfo[i].paymentStatus == PAID)
                 {
@@ -251,31 +477,68 @@ void CustomerUpdateOption3(Customer customerInfo[], int &prevI, int &paymentStat
                             customerInfo[i].paymentStatus = UNPAID;
                             break;
                         default:
-                            cout<<"---------------------------------------------------------------------------------------------------------\n"
-                            <<setw(66)<<right<<"Try again. Choice not Found."
-                            <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
+                            RetryStyle();
+                            break;
                     }
                 } while (paymentStatus != 1 && paymentStatus != 2);
-                }
+            }
         }
 
         if (found == true)
         {
-            cout<<"---------------------------------------------------------------------------------------------------------\n"
-                <<setw(63)<<"Customer record updated!"<<endl;
+            UpdateConfirmed();
         }
             else
             {
-                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(67)<<"Customer record not found!"<<endl;
+                RecordSearchFailed();
             }
                                 
     } while (found == false);
 }
 
-void CustomerManagement(Customer customerInfo[], int &prevI)
+void CustomerUpdateParent(Customer customerInfo[], int &prevI, int &paymentStatus, bool &found, string &search)
 {
-    Customer tempInfo[25];
+    int choice;
+
+    do
+    {
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(65)<<right<<"| Select Field to Update |"
+            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(71)<<right<<"[1] Customer Name/Address/Phone #\n"
+            <<setw(79)<<right<<"[2] Gallon Ownership & Latest Transaction\n"
+            <<setw(56)<<right<<"[3] Payment Status\n"
+            <<setw(45)<<right<<"[4] Back"<<endl;
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(53)<<right<<"Input: ";
+        cin>>choice;
+        cin.clear();
+        cin.ignore();
+        cout<<"---------------------------------------------------------------------------------------------------------\n";
+
+        switch (choice)
+        {
+            case 1:
+                CustomerUpdateOption1(customerInfo, prevI, found, search);
+                break;
+            case 2:
+                CustomerUpdateOption2(customerInfo, prevI, found, search);
+                break;
+            case 3:
+                CustomerUpdateOption3(customerInfo, prevI, paymentStatus, found, search);
+                break;
+            case 4:
+                cout<<setw(57)<<right<<"Returning..."<<endl;
+                break;
+            default:
+                RetryStyle();
+                break;  
+        }
+    } while (choice != 4);
+}
+
+void CustomerManagement(Customer customerInfo[], Customer tempInfo[], int &prevI)
+{
     int choice, choice2, i, size, paymentStatus;
     string search;
     bool validation, found;
@@ -298,19 +561,63 @@ void CustomerManagement(Customer customerInfo[], int &prevI)
         switch(choice)
         {
             case 1:
+                AddCustomerInfo(customerInfo, tempInfo, prevI, size, paymentStatus);
+                break;
+            case 2:
+                DisplayCusomterInfo(customerInfo, tempInfo, prevI);
+                break;
+            case 3:
+                CustomerUpdateParent(customerInfo, prevI, paymentStatus, found, search);
+                break;
+            case 4:
+                cout<<setw(57)<<right<<"Returning..."<<endl;
+                break;
+            default:
+                RetryStyle();
+                break;
+        }
+    } while (choice != 4);
+}
+
+void ProductManagement()
+{
+
+}
+
+void EmployeeManagement(Employee employeeInfo[], int &prevI)
+{
+    int choice, choice2, i, size, sex, role;
+
+    do
+    {
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(62)<<right<<"| Employee Records |"
+            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(61)<<right<<"[1] Add Employee Data\n"
+            <<setw(65)<<right<<"[2] Display Employee Data\n"
+            <<setw(64)<<right<<"[3] Update Employee Data\n"
+            <<setw(63)<<right<<"[4] Return to Main Menu\n"
+            <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(53)<<right<<"Input: ";
+        cin>>choice;
+        cin.clear();
+        cin.ignore();
+
+        switch(choice)
+        {
+            case 1:
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(60)<<right<<"| Adding Records |"
                     <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
-                    <<"\nEnter amount of customers: ";
+                    <<"\nEnter amount of employees: ";
                 cin>>size;
                 cin.clear();
                 cin.ignore();
 
-                    while (size <= 0) // simple input error handling, used thoughout parts of the code.
+                    while (size <= 0)
                     {
-                        cout<<"---------------------------------------------------------------------------------------------------------\n"
-                            <<setw(64)<<right<<"Invalid amount! Try again."
-                            <<"\nEnter amount of customers: ";
+                        RetryAmount();
+                        cout<<"\nEnter amount of employees: ";
                         cin>>size;
                         cin.clear();
                         cin.ignore();
@@ -319,84 +626,75 @@ void CustomerManagement(Customer customerInfo[], int &prevI)
                 for (i = 0; i < size; i++)
                 {
                     cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                        <<setw(59)<<right<<"Customer Record #"<<i + prevI + 1
-                        <<"\nEnter customer's surname: ";
-                    getline(cin, tempInfo[i].lastName);
+                        <<setw(59)<<right<<"Employee Record #"<<i + prevI + 1
+                        <<"\nEnter employee's surname: ";
+                    getline(cin, employeeInfo[i + prevI].lastName);
 
-                    cout<<"Enter customer's first name: ";
-                    getline(cin, tempInfo[i].firstName);
+                    cout<<"Enter emloyee's first name: ";
+                    getline(cin, employeeInfo[i + prevI].firstName);
 
-                    cout<<"Enter customer's middle initial: ";
-                    getline(cin, tempInfo[i].middleInitial);
+                    cout<<"Enter employee's middle initial: ";
+                    getline(cin, employeeInfo[i + prevI].middleInitial);
 
-                    cout<<"Enter customer's address (brngy & purok): ";
-                    getline(cin, tempInfo[i].address);
+                    cout<<"Enter employee's address (brngy & purok): ";
+                    getline(cin, employeeInfo[i + prevI].address);
                     
-                    cout<<"Enter customer's phone number (example: 09123456789): ";
-                    getline(cin, tempInfo[i].phoneNumber);
-
-                    cout<<"Enter customer gallon ownership (quantity): ";
-                    cin>>tempInfo[i].gallonsOwnedQty;
-                    cin.clear();
-                    cin.ignore();
-
-                        while (tempInfo[i].gallonsOwnedQty <= 0)
-                        {
-                            cout<<"---------------------------------------------------------------------------------------------------------\n"
-                                <<setw(65)<<right<<"Invalid quantity! Try again."
-                                <<"\n---------------------------------------------------------------------------------------------------------"
-                                <<"\nEnter how many gallons the customer owns: ";
-                            cin>>tempInfo[i].gallonsOwnedQty;
-                            cin.clear();
-                            cin.ignore();
-                        }
-
-                    cout<<"Enter latest transaction date (m/dd): ";
-                    getline(cin, tempInfo[i].latestTransaction);
+                    cout<<"Enter employee's phone number (example: 09123456789): ";
+                    getline(cin, employeeInfo[i + prevI].phoneNumber);
 
                     do
                     {
-                        cout<<"Enter payment status of gallons owned (1 - Paid | 2 - Unpaid): ";
-                        cin>>paymentStatus;
+                        cout<<"Enter sex of employee (1 - MALE | 2 - FEMALE): ";
+                        cin>>sex;
                         cin.clear();
                         cin.ignore();
                         
-                        switch (paymentStatus)
+                        switch (sex)
                         {
                             case 1:
-                                tempInfo[i].paymentStatus = PAID;
+                                employeeInfo[i + prevI].sex = MALE;
                                 break;
                             case 2:
-                                tempInfo[i].paymentStatus = UNPAID;
+                                employeeInfo[i + prevI].sex = FEMALE;
                                 break;
                             default:
-                                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                                <<setw(66)<<right<<"Try again. Choice not Found."
-                                <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
+                                RetryStyle();
+                                break;
                         }
-                    } while (paymentStatus != 1 && paymentStatus != 2);
-                    
+                    } while (sex != 1 && sex != 2);
 
-                    // a self maintaining algorithm that prevents old array values (data of users) from getting overwritten
-                    
-                    customerInfo[i + prevI].lastName = tempInfo[i].lastName;
-                    customerInfo[i + prevI].firstName = tempInfo[i].firstName; 
-                    customerInfo[i + prevI].middleInitial = tempInfo[i].middleInitial;
-                    customerInfo[i + prevI].address = tempInfo[i].address;
-                    customerInfo[i + prevI].phoneNumber = tempInfo[i].phoneNumber;
-                    customerInfo[i + prevI].gallonsOwnedQty = tempInfo[i].gallonsOwnedQty;
-                    customerInfo[i + prevI].latestTransaction = tempInfo[i].latestTransaction;
-                    customerInfo[i + prevI].paymentStatus = tempInfo[i].paymentStatus;
+                    do
+                    {
+                        cout<<"Enter role of employee (1 - DRIVER | 2 - REFILLER): ";
+                        cin>>role;
+                        cin.clear();
+                        cin.ignore();
+                        
+                        switch (role)
+                        {
+                            case 1:
+                                employeeInfo[i + prevI].position = DRIVER;
+                                break;
+                            case 2:
+                                employeeInfo[i + prevI].position = REFILLER;
+                                break;
+                            default:
+                                RetryStyle();
+                                break;
+                        }
+                    } while (role != 1 && role != 2);
                 }
+
                 prevI += i; 
+
                 cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(71)<<right<<"Customer Record(s) Added Successfully!"<<endl;
+                    <<setw(71)<<right<<"Employee Record(s) Added Successfully!"<<endl;
                 break;
             case 2:
                 do
                 {
                     cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                        <<setw(61)<<"| Customer Data |\n"
+                        <<setw(61)<<"| Employee Data |\n"
                         <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                         <<setw(6)<<left<<"#"
                         <<setw(10)<<left<<"Surname"
@@ -404,151 +702,57 @@ void CustomerManagement(Customer customerInfo[], int &prevI)
                         <<setw(5)<<left<<"M.I"
                         <<setw(30)<<left<<"Address"
                         <<setw(13)<<left<<"Phone No."
-                        <<setw(10)<<left<<"Gallons"
-                        <<setw(9)<<left<<"Latest"
-                        <<"Status"
+                        <<setw(9)<<left<<"Sex"
+                        <<"Role"
                         <<"\n-----|--------|--------------------|-----------------------------|-------------|-------|--------|-------|"<<endl;
                     for (i = 0; i < prevI; i++)
                     {
                         cout<<setw(6)<<left<<i+1
-                            <<setw(10)<<left<<customerInfo[i].lastName
-                            <<setw(16)<<left<<customerInfo[i].firstName
-                            <<setw(5)<<left<<customerInfo[i].middleInitial
-                            <<setw(30)<<left<<customerInfo[i].address
-                            <<setw(13)<<left<<customerInfo[i].phoneNumber
-                            <<setw(10)<<left<<customerInfo[i].gallonsOwnedQty
-                            <<setw(9)<<left<<customerInfo[i].latestTransaction;
+                            <<setw(10)<<left<<employeeInfo[i].lastName
+                            <<setw(16)<<left<<employeeInfo[i].firstName
+                            <<setw(5)<<left<<employeeInfo[i].middleInitial
+                            <<setw(30)<<left<<employeeInfo[i].address
+                            <<setw(13)<<left<<employeeInfo[i].phoneNumber;
 
-                        if (customerInfo[i].paymentStatus == PAID)
+                        if (employeeInfo[i].sex == MALE)
                         {
-                            cout<<"PAID"<<endl;
+                            cout<<setw(9)<<left<<"MALE"<<endl;
                         }
-                            else if (customerInfo[i].paymentStatus == UNPAID)
+                            else if (employeeInfo[i].sex == FEMALE)
                             {
-                                cout<<"UNPAID"<<endl;
+                                cout<<setw(9)<<left<<"FEMALE"<<endl;
+                            }
+
+                        if (employeeInfo[i].position == DRIVER)
+                        {
+                            cout<<"DRIVER"<<endl;
+                        }
+                            else if (employeeInfo[i].position == REFILLER)
+                            {
+                                cout<<"REFILLER"<<endl;
                             }
                     }
                     cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
-                        <<"\n<< [1] Back\n"
+                        <<"\n[1] Back\n"
                         <<setw(53)<<right<<"Input: ";
                     cin>>choice2;
-                    cin.ignore();
-
-                } while (choice2 != 1);
-                break;
-            case 3:
-                do
-                {
-                    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                        <<setw(65)<<right<<"| Select Field to Update |"
-                        <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                        <<setw(71)<<right<<"[1] Customer Name/Address/Phone #\n"
-                        <<setw(79)<<right<<"[2] Gallon Ownership & Latest Transaction\n"
-                        <<setw(56)<<right<<"[3] Payment Status\n"
-                        <<setw(45)<<right<<"[4] Back"<<endl;
-                    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                        <<setw(53)<<right<<"Input: ";
-                    cin>>choice2;
-                    cin.clear();
                     cin.ignore();
                     cout<<"---------------------------------------------------------------------------------------------------------\n";
 
-                    switch (choice2)
-                    {
-                        case 1:
-                            CustomerUpdateOption1(customerInfo, prevI, found, search);
-                            break;
-                        case 2:
-                            CustomerUpdateOption2(customerInfo, prevI, found, search);
-                            break;
-                        case 3:
-                            CustomerUpdateOption3(customerInfo, prevI, paymentStatus, found, search);
-                            break;
-                        case 4:
-                            cout<<setw(57)<<right<<"Returning..."<<endl;
-                            break;
-                        default:
-                            cout<<"---------------------------------------------------------------------------------------------------------\n"
-                                <<setw(66)<<right<<"Try again. Choice not Found."<<endl;
-                            break;  
-                    }
-                } while (choice2 != 4);
-                break;
-            case 4:
-                break;
-            default:
-                cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
-                cout<<setw(41)<<right<<"Try again! Choice not found."<<endl;
-        }
-    } while (choice != 4);
-}
-
-void ProductManagement()
-{
-    int choice;
-
-    do
-    {
-        cout<<"-----=====---===   Product Management  ===---=====-----\n"
-            <<setw(27)<<"[0] Empty for "<<"\n[1] Now"<<endl;
-        cout<<"-----=====-----=====-----=====-----=====-----=====-----";
-        cout<<"\nInput: ";
-        cin>>choice;
-        cin.ignore();
-
-        switch(choice)
-        {
-            case 1:
-
-                break;
-            case 2:
-
-            default:
-                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(41)<<"Try again! Choice not found."<<endl;
-                break;
-        }
-
-    } while (choice != 6);
-}
-
-void EmployeeManagement()
-{
-    int choice;
-
-    do
-    {
-        cout<<"-----=====-----=====-----=====---===   Employee Records   ===---=====-----=====-----=====-----"
-            <<"\n"<<setw(30)<<"[1] Employees"
-            <<"\n"<<setw(35)<<"[2] Update Employee Data"
-            <<"\n"<<setw(40)<<"[3] Return to Main Menu"<<endl;
-        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----";
-        cout<<"\nInput: ";
-        cin>>choice;
-        cin.clear();
-        cin.ignore();
-
-        switch(choice)
-        {
-            case 1:
-
-                break;
-            case 2:
-
+                } while (choice2 != 1);
                 break;
             case 3:
                 
                 break;
             default:
-                cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
-                cout<<setw(41)<<"Try again! Choice not found."<<endl;
+                RetryStyle();
                 break;
         }
 
-    } while (choice != 3);
+    } while (choice != 4);
 }
 
-void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeInfo[], int &custPrevI, int &prodPrevI, int &empPrevI)
+void MainMenu(Customer customerInfo[], Customer custTempInfo[], Product productInfo[], Employee employeeInfo[], int &custPrevI, int &prodPrevI, int &empPrevI)
 {
     int choice;
 
@@ -573,10 +777,10 @@ void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeI
                 ProductManagement();
                 break;
             case 2:
-                CustomerManagement(customerInfo, custPrevI);
+                CustomerManagement(customerInfo, custTempInfo, custPrevI);
                 break;
             case 3:
-                EmployeeManagement();
+                EmployeeManagement(employeeInfo, empPrevI);
                 break;
             case 4:
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
@@ -584,8 +788,8 @@ void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeI
                 <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
                 break;
             default:
-                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(66)<<right<<"Try again. Choice not Found."<<endl;
+                RetryStyle();
+                break;
         }
 
     } while (choice != 4);
@@ -593,13 +797,13 @@ void MainMenu(Customer customerInfo[], Product productInfo[], Employee employeeI
 
 int main()
 {
-    Customer customerInformation[50]; // declare all needed struct/variables/arrays here so all of the value/data persists even if functions end,
+    Customer customerInformation[50], custTempInfo[50]; // declare all needed struct/variables/arrays here so all of the value/data persists even if functions end,
     Product productInformation[50]; // only does it stop persisting after the program ends.
-    Employee employeeInfromation[50];
+    Employee employeeInfromation[50]; // array size is 50 maximum per struct, it's just for a case study after all, it makes the program light :D
 
     int customerPrevI, productPrevI, employeePrevI;
 
-    MainMenu(customerInformation, productInformation, employeeInfromation, customerPrevI, productPrevI, employeePrevI);
+    MainMenu(customerInformation, custTempInfo, productInformation, employeeInfromation, customerPrevI, productPrevI, employeePrevI);
 
     return EXIT_SUCCESS;
 }
