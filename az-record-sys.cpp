@@ -46,18 +46,15 @@ struct Customer{
 };
 
 struct Sales{
-    int sales;
-    int week;
-    int year;
-    MONTHS month;
+    int week[4];
 };
 
 struct Product{
     int tankStorage[50];
     int latestYear[50];
     int upcomingYear[50];
-    string latestDay[50];
-    string upcomingDay[50];
+    int latestDay[50];
+    int upcomingDay[50];
     int distributedGallonQty;
     int unpaidGallons;
     int paidGallons;
@@ -605,6 +602,146 @@ void CustomerManagement(Customer customerInfo[], Customer tempInfo[], Product &p
     } while (choice != 4);
 }
 
+void UpdateSales(Product &productInfo, Sales salesInfo[], int &monthlySales, int &totalSales, int PRICE)
+{
+    int x, y, choice, week, month;
+    bool valid = false;
+    string months[12] = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"};
+
+
+    cout<<"Which week do you want to update? (1 - 4): ";
+    cin>>week;
+    cin.clear();
+    cin.ignore();
+
+    while (week < 1 || week > 4)
+    {
+        RetryStyle();   
+
+        cout<<"Which week do you want to update? (1 - 4): ";
+        cin>>week;
+        cin.clear();
+        cin.ignore();
+    }
+
+    cout<<"Which month is this week part of? (1 - 12): ";
+    cin>>month;
+    cin.clear();
+    cin.ignore();
+
+    while (month < 1 || month > 12)
+    {
+        RetryStyle();
+
+        cout<<"Which month is this week part of? (1 - 12): ";
+        cin>>month;
+        cin.clear();
+        cin.ignore();
+    }
+
+    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+    <<setw(62)<<"Data you're about to update:\n"
+    <<"---------------------------------------------------------------------------------------------------------\n"
+    <<setw(42)<<right<<"Month: "<<months[month - 1]<<setw(8)<<right<<"Week #"<<week<<"\n"
+    <<setw(49)<<right<<"Sales: "<<salesInfo[month - 1].week[week - 1]
+    <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
+
+    cout<<"Enter updated sales: ";
+    cin>>salesInfo[month - 1].week[week - 1];
+    cin.clear();
+    cin.ignore();
+
+    if (salesInfo[month - 1].week[week - 1] < 0)
+    {
+        cout<<"---------------------------------------------------------------------------------------------------------\n"
+            <<setw(60)<<right<<"Record update failed!\n"
+            <<"---------------------------------------------------------------------------------------------------------"<<endl;
+
+        cout<<"Enter updated sales: ";
+        cin>>salesInfo[month - 1].week[week - 1];
+        cin.clear();
+        cin.ignore();
+    }
+
+    valid = true;
+
+    if (valid == true)
+    {
+        cout<<"---------------------------------------------------------------------------------------------------------\n"
+            <<setw(56)<<right<<"Record updated!\n"
+            <<"---------------------------------------------------------------------------------------------------------"<<endl;
+    }
+}
+
+void DisplaySales(Product &productInfo, Sales salesInfo[])
+{
+    int x, y, choice, monthlySales, totalSales;
+    int const PRICE = 30;
+
+    do
+    {
+        totalSales = 0;
+
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(59)<<"| Sales Information |\n"
+            <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(30)<<right<<"Month"<<setw(13)<<right<<"Week #1"<<setw(12)<<right<<"Week #2"<<setw(10)<<right<<"Week #3"<<setw(12)<<right<<"Week #4\n"
+            <<"---------------------------------------------------------------------------------------------------------"<<endl;
+        
+            // had to write every month and week manually, using loops would actually take so much more effort compared to doing this. week 0 is week 1 and so forth, saleInfo 0 is january and so forth.
+            cout<<setw(25)<<right<<" "<<setw(11)<<left<<"JANUARY"<<setw(11)<<left<<salesInfo[0].week[0]<<setw(11)<<left<<salesInfo[0].week[1]<<setw(11)<<left<<salesInfo[0].week[2]<<setw(11)<<left<<salesInfo[0].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"FEBRUARY"<<setw(11)<<left<<salesInfo[1].week[0]<<setw(11)<<left<<salesInfo[1].week[1]<<setw(11)<<left<<salesInfo[1].week[2]<<setw(11)<<left<<salesInfo[1].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"MARCH"<<setw(11)<<left<<salesInfo[2].week[0]<<setw(11)<<left<<salesInfo[2].week[1]<<setw(11)<<left<<salesInfo[2].week[2]<<setw(11)<<left<<salesInfo[2].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"APRIL"<<setw(11)<<left<<salesInfo[3].week[0]<<setw(11)<<left<<salesInfo[3].week[1]<<setw(11)<<left<<salesInfo[3].week[2]<<setw(11)<<left<<salesInfo[3].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"MAY"<<setw(11)<<left<<salesInfo[4].week[0]<<setw(11)<<left<<salesInfo[4].week[1]<<setw(11)<<left<<salesInfo[4].week[2]<<setw(11)<<left<<salesInfo[4].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"JUNE"<<setw(11)<<left<<salesInfo[5].week[0]<<setw(11)<<left<<salesInfo[5].week[1]<<setw(11)<<left<<salesInfo[5].week[2]<<setw(11)<<left<<salesInfo[5].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"JULY"<<setw(11)<<left<<salesInfo[6].week[0]<<setw(11)<<left<<salesInfo[6].week[1]<<setw(11)<<left<<salesInfo[6].week[2]<<setw(11)<<left<<salesInfo[6].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"AUGUST"<<setw(11)<<left<<salesInfo[7].week[0]<<setw(11)<<left<<salesInfo[7].week[1]<<setw(11)<<left<<salesInfo[7].week[2]<<setw(11)<<left<<salesInfo[7].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"SEPTEMBER"<<setw(11)<<left<<salesInfo[8].week[0]<<setw(11)<<left<<salesInfo[8].week[1]<<setw(11)<<left<<salesInfo[8].week[2]<<setw(11)<<left<<salesInfo[8].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"OCTOBER"<<setw(11)<<left<<salesInfo[9].week[0]<<setw(11)<<left<<salesInfo[9].week[1]<<setw(11)<<left<<salesInfo[9].week[2]<<setw(11)<<left<<salesInfo[9].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"NOVEMBER"<<setw(11)<<left<<salesInfo[10].week[0]<<setw(11)<<left<<salesInfo[10].week[1]<<setw(11)<<left<<salesInfo[10].week[2]<<setw(11)<<left<<salesInfo[10].week[3]<<"\n"
+                <<setw(25)<<right<<" "<<setw(11)<<left<<"DECEMBER"<<setw(11)<<left<<salesInfo[11].week[0]<<setw(11)<<left<<salesInfo[11].week[1]<<setw(11)<<left<<salesInfo[11].week[2]<<setw(11)<<left<<salesInfo[11].week[3]<<endl;
+
+        cout<<"---------------------------------------------------------------------------------------------------------"<<endl;
+
+        for (x = 0; x < 12; x++)
+        {
+            for (y = 0; y < 4; y++)
+            {
+                // both formulas for bonus pts, sub total is monthlySales and grand total is totalSales.
+                monthlySales = salesInfo[x].week[y] * PRICE; 
+                totalSales += monthlySales;
+            }
+        }
+
+        cout<<setw(11)<<right<<"TOTAL SALES THIS YEAR: ₱"<<totalSales<<endl;
+
+        cout<<"---------------------------------------------------------------------------------------------------------"
+            <<setw(11)<<right<<"\nCURRENT PRICE PER GALLON : ₱"<<PRICE
+            <<"\nNOTE: NUMBERS ABOVE ARE HOW MANY GALLONS SOLD PER WEEK. NOT ACTUAL PESOS PRICE."
+            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
+            <<"\n"<<setw(43)<<right<<"[1] Back"<<setw(24)<<right<<"[2] Add/Update Sales"
+            <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
+        cout<<setw(50)<<right<<"Input: ";
+        cin>>choice;
+        cin.ignore();
+        cout<<"---------------------------------------------------------------------------------------------------------\n";
+
+        switch (choice)
+        {
+            case 1:
+                cout<<setw(57)<<right<<"Returning..."<<endl;
+                break;
+            case 2:
+                UpdateSales(productInfo, salesInfo, monthlySales, totalSales, PRICE);
+                break;
+            default:
+                RetryStyle();
+                break;
+        }
+    } while (choice != 1);
+}
+
 void AddWaterTank(Product &productInfo, int &prevI)
 {
     int i, latestMonth, upcomingMonth;
@@ -671,7 +808,17 @@ void AddWaterTank(Product &productInfo, int &prevI)
             } while (latestMonth != 1 && latestMonth != 2 && latestMonth != 3 && latestMonth != 4 && latestMonth != 5 && latestMonth != 6 && latestMonth != 7 && latestMonth != 8 && latestMonth != 9 && latestMonth != 10 && latestMonth != 11 && latestMonth != 12);
             
             cout<<"Enter Day (1-31): ";
-            getline(cin, productInfo.latestDay[i + prevI]);
+            cin>>productInfo.latestDay[i + prevI];
+
+            while (productInfo.latestDay[i] <= 0 || productInfo.latestDay[i] > 31)
+                {
+                    cout<<"---------------------------------------------------------------------------------------------------------\n"
+                        <<setw(63)<<right<<"Invalid Day! Try again.\n"
+                        <<"---------------------------------------------------------------------------------------------------------\n";
+                    
+                    cout<<"Enter Day (1-31): ";
+                    cin>>productInfo.latestDay[i];
+                }
 
             cout<<"Enter Year: ";
             cin>>productInfo.latestYear[i + prevI];
@@ -739,7 +886,17 @@ void AddWaterTank(Product &productInfo, int &prevI)
             } while (upcomingMonth != 1 && upcomingMonth != 2 && upcomingMonth != 3 && upcomingMonth != 4 && upcomingMonth != 5 && upcomingMonth != 6 && upcomingMonth != 7 && upcomingMonth != 8 && upcomingMonth != 9 && upcomingMonth != 10 && upcomingMonth != 11 && upcomingMonth != 12);
             
             cout<<"Enter Day (1-31): ";
-            getline(cin, productInfo.upcomingDay[i + prevI]);
+            cin>>productInfo.upcomingDay[i + prevI];
+
+            while (productInfo.upcomingDay[i] <= 0 || productInfo.upcomingDay[i] > 31)
+                {
+                    cout<<"---------------------------------------------------------------------------------------------------------\n"
+                        <<setw(63)<<right<<"Invalid Day! Try again.\n"
+                        <<"---------------------------------------------------------------------------------------------------------\n";
+                    
+                    cout<<"Enter Day (1-31): ";
+                    cin>>productInfo.upcomingDay[i];
+                }
 
             cout<<"Enter Year: ";
             cin>>productInfo.upcomingYear[i + prevI];
@@ -952,7 +1109,17 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
                 } while (upcomingMonth != 1 && upcomingMonth != 2 && upcomingMonth != 3 && upcomingMonth != 4 && upcomingMonth != 5 && upcomingMonth != 6 && upcomingMonth != 7 && upcomingMonth != 8 && upcomingMonth != 9 && upcomingMonth != 10 && upcomingMonth != 11 && upcomingMonth != 12);
                 
                 cout<<"Enter Day (1-31): ";
-                getline(cin, productInfo.upcomingDay[i]);
+                cin>>productInfo.upcomingDay[i];
+
+                while (productInfo.upcomingDay[i] <= 0 || productInfo.upcomingDay[i] > 31)
+                {
+                    cout<<"---------------------------------------------------------------------------------------------------------\n"
+                        <<setw(63)<<right<<"Invalid Day! Try again.\n"
+                        <<"---------------------------------------------------------------------------------------------------------\n";
+                    
+                    cout<<"Enter Day (1-31): ";
+                    cin>>productInfo.upcomingDay[i];
+                }
 
                 cout<<"Enter Year: ";
                 cin>>productInfo.upcomingYear[i];
@@ -1075,9 +1242,9 @@ void DisplayGallonRecords(Product &productInfo)
     } while (choice != 1);
 }
 
-void ProductManagement(Product &productInfo, int &prevI)
+void ProductManagement(Product &productInfo, Sales salesInfo[], int &prevI)
 {
-    int i, choice;
+    int choice;
 
     do
     {
@@ -1104,7 +1271,7 @@ void ProductManagement(Product &productInfo, int &prevI)
                 DisplayGallonRecords(productInfo);
                 break;
             case 3:
-                
+                DisplaySales(productInfo, salesInfo);
                 break;
             case 4:
                 cout<<setw(57)<<right<<"Returning..."<<endl;
@@ -1495,7 +1662,7 @@ void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role, strin
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
                     <<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(57)<<right<<"Employee #"<<employeeInfo[i].employeeRecordNum;
+                    <<setw(55)<<right<<"Employee #"<<employeeInfo[i].employeeRecordNum;
 
                 if (employeeInfo[i].position == DRIVER)
                 {
@@ -1625,7 +1792,7 @@ void EmployeeManagement(Employee employeeInfo[], Employee tempInfo[], int &prevI
     } while (choice != 4);
 }
 
-void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeInfo[], Customer custTempInfo[],  Employee empTempInfo[], int &custPrevI, int &prodPrevI, int &empPrevI)
+void MainMenu(Customer customerInfo[], Product &productInfo, Sales salesInfo[], Employee employeeInfo[], Customer custTempInfo[],  Employee empTempInfo[], int &custPrevI, int &prodPrevI, int &empPrevI)
 {
     int choice;
 
@@ -1647,7 +1814,7 @@ void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeIn
         switch(choice)
         {
             case 1:
-                ProductManagement(productInfo, prodPrevI);
+                ProductManagement(productInfo, salesInfo, prodPrevI);
                 break;
             case 2:
                 CustomerManagement(customerInfo, custTempInfo, productInfo, custPrevI);
@@ -1659,6 +1826,7 @@ void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeIn
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                 <<setw(55)<<"See you again!"
                 <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
+                return;
                 break;
             default:
                 RetryStyle();
@@ -1671,11 +1839,12 @@ int main()
 {
     Customer customerInformation[50], custTempInfo[50]; // declare all needed struct/variables/arrays here so all of the value/data persists even if functions end,
     Product productInformation; // only does it stop persisting after the program ends.
-    Employee employeeInfromation[50], empTempInfo[50]; // array size is 50 maximum per struct/members, it's just for a case study after all, it makes the program light :D
+    Sales salesInformation[50]; // array size is 50 maximum per struct/members, 
+    Employee employeeInfromation[50], empTempInfo[50]; // it's just for a case study after all, it makes the program light :D
 
     int customerPrevI, prodPrevI, employeePrevI;
 
-    MainMenu(customerInformation, productInformation, employeeInfromation, custTempInfo, empTempInfo, customerPrevI, prodPrevI, employeePrevI);
+    MainMenu(customerInformation, productInformation, salesInformation, employeeInfromation, custTempInfo, empTempInfo, customerPrevI, prodPrevI, employeePrevI);
 
     return EXIT_SUCCESS;
 }
