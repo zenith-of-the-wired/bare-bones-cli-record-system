@@ -54,15 +54,15 @@ struct Sales{
 
 struct Product{
     int tankStorage[50];
-    int year[50];
-    int day[50];
-    int sales[50];
+    int latestYear[50];
+    int upcomingYear[50];
+    string latestDay[50];
+    string upcomingDay[50];
     int distributedGallonQty;
-    int iceBagBatchQty;
-    int bottledWaterBatchQty;
     int unpaidGallons;
     int paidGallons;
-    MONTHS month[50];
+    MONTHS latestMonth[50];
+    MONTHS upcomingMonth[50];
 };
 
 struct Employee{
@@ -90,17 +90,17 @@ void RetryStyle()
         <<"---------------------------------------------------------------------------------------------------------"<<endl;
 }
 
-void UpdateConfirmed()
+void UpdateConfirmed(string &target)
 {
     cout<<"---------------------------------------------------------------------------------------------------------\n"
-        <<setw(63)<<"Customer record updated!\n"
+        <<setw(49)<<target<<" record updated!\n"
         <<"---------------------------------------------------------------------------------------------------------"<<endl;
 }
 
-void RecordSearchFailed()
+void RecordSearchFailed(string &target)
 {
     cout<<"---------------------------------------------------------------------------------------------------------\n"
-        <<setw(67)<<"Customer record not found!\n"
+        <<setw(47)<<target<<" record not found!\n"
         <<"---------------------------------------------------------------------------------------------------------"<<endl;
 }
 
@@ -118,81 +118,81 @@ void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], Product &prod
 {
     int i, size;
 
-        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(60)<<right<<"| Adding Records |"
-            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
-            <<"\nEnter amount of customers: ";
+    cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+        <<setw(60)<<right<<"| Adding Records |"
+        <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
+        <<"\nEnter amount of customers: ";
+    cin>>size;
+    cin.clear();
+    cin.ignore();
+
+    while (size <= 0)
+    {
+        RetryAmount();
+        cout<<"\nEnter amount of customers: ";
         cin>>size;
         cin.clear();
         cin.ignore();
+    }
+    
+    for (i = 0; i < size; i++)
+    {
+        customerInfo[i + prevI].customerRecordNum =  i + prevI + 1;
 
-        while (size <= 0)
-        {
-            RetryAmount();
-            cout<<"\nEnter amount of customers: ";
-            cin>>size;
-            cin.clear();
-            cin.ignore();
-        }
-        
-        for (i = 0; i < size; i++)
-        {
-            customerInfo[i + prevI].customerRecordNum =  i + prevI + 1;
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(59)<<right<<"Customer Record #"<<customerInfo[i].customerRecordNum + prevI
+            <<"\nEnter customer's surname: ";
+        getline(cin, customerInfo[i + prevI].lastName);
 
-            cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                <<setw(59)<<right<<"Customer Record #"<<customerInfo[i].customerRecordNum + prevI
-                <<"\nEnter customer's surname: ";
-            getline(cin, customerInfo[i + prevI].lastName);
+        cout<<"Enter customer's first name: ";
+        getline(cin, customerInfo[i + prevI].firstName);
 
-            cout<<"Enter customer's first name: ";
-            getline(cin, customerInfo[i + prevI].firstName);
+        cout<<"Enter customer's middle initial: ";
+        getline(cin, customerInfo[i + prevI].middleInitial);
 
-            cout<<"Enter customer's middle initial: ";
-            getline(cin, customerInfo[i + prevI].middleInitial);
-
-            cout<<"Enter customer's address (barangy & purok): ";
-            getline(cin, customerInfo[i + prevI].address);
+        cout<<"Enter customer's address (barangy & purok): ";
+        getline(cin, customerInfo[i + prevI].address);
             
-            cout<<"Enter employee's phone number (format: 09---------): ";
-            getline(cin, customerInfo[i + prevI].phoneNumber);
+        cout<<"Enter employee's phone number (format: 09---------): ";
+        getline(cin, customerInfo[i + prevI].phoneNumber);
 
-            cout<<"Enter customer gallon ownership (quantity): ";
+        cout<<"Enter customer gallon ownership (quantity): ";
+        cin>>customerInfo[i + prevI].gallonsOwnedQty;
+        cin.clear();
+        cin.ignore();
+
+        while (customerInfo[i + prevI].gallonsOwnedQty <= 0)
+        {
+            cout<<"---------------------------------------------------------------------------------------------------------\n"
+                <<setw(65)<<right<<"Invalid quantity! Try again."
+                <<"\n---------------------------------------------------------------------------------------------------------"
+                <<"\nEnter how many gallons the customer owns: ";
             cin>>customerInfo[i + prevI].gallonsOwnedQty;
             cin.clear();
             cin.ignore();
+        }
 
-            while (customerInfo[i + prevI].gallonsOwnedQty <= 0)
+        do
+        {
+            cout<<"Enter payment status of gallons owned (1 - Paid | 2 - Unpaid): ";
+            cin>>paymentStatus;
+            cin.clear();
+            cin.ignore();
+            
+            switch (paymentStatus)
             {
-                cout<<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(65)<<right<<"Invalid quantity! Try again."
-                    <<"\n---------------------------------------------------------------------------------------------------------"
-                    <<"\nEnter how many gallons the customer owns: ";
-                cin>>customerInfo[i + prevI].gallonsOwnedQty;
-                cin.clear();
-                cin.ignore();
+                case 1:
+                    customerInfo[i + prevI].paymentStatus = PAID;
+                    productInfo.paidGallons += customerInfo[i + prevI].gallonsOwnedQty;
+                    break;
+                case 2:
+                    customerInfo[i + prevI].paymentStatus = UNPAID;
+                    productInfo.unpaidGallons += customerInfo[i + prevI].gallonsOwnedQty;
+                    break;
+                default:
+                    RetryStyle();
+                    break;
             }
-
-            do
-            {
-                cout<<"Enter payment status of gallons owned (1 - Paid | 2 - Unpaid): ";
-                cin>>paymentStatus;
-                cin.clear();
-                cin.ignore();
-                
-                switch (paymentStatus)
-                {
-                    case 1:
-                        customerInfo[i + prevI].paymentStatus = PAID;
-                        productInfo.paidGallons += customerInfo[i + prevI].gallonsOwnedQty;
-                        break;
-                    case 2:
-                        customerInfo[i + prevI].paymentStatus = UNPAID;
-                        productInfo.unpaidGallons += customerInfo[i + prevI].gallonsOwnedQty;
-                        break;
-                    default:
-                        RetryStyle();
-                        break;
-                }
         } while (paymentStatus != 1 && paymentStatus != 2);
 
         CustomerOriginalCopy(customerInfo, tempInfo, prevI);
@@ -282,7 +282,7 @@ void DisplayCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prev
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
             <<"\n"<<setw(29)<<right<<"[1] Back"<<setw(32)<<right<<"[2] Sort By Last Name (A-Z)"<<setw(32)<<right<<"[3] Sort By Last Name (Z-A)"
             <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
-        cout<<setw(53)<<right<<"Input: ";
+        cout<<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.ignore();
         cout<<"---------------------------------------------------------------------------------------------------------\n";
@@ -305,7 +305,7 @@ void DisplayCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prev
     } while (choice != 1);
 }
 
-void CustomerUpdateOption1(Customer customerInfo[], int &prevI)
+void CustomerUpdateOption1(Customer customerInfo[], int &prevI, string &target)
 {
     int i;
     bool found; 
@@ -358,16 +358,16 @@ void CustomerUpdateOption1(Customer customerInfo[], int &prevI)
 
         if (found == true)
         {
-            UpdateConfirmed();
+            UpdateConfirmed(target);
         }
             else
             {
-                RecordSearchFailed();
+                RecordSearchFailed(target);
             }
     } while (found == false);
 }
 
-void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &prevI)
+void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &prevI, string &target)
 {
     int i, oldValue, update;
     bool found; 
@@ -434,16 +434,16 @@ void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &p
 
         if (found == true)
         {
-            UpdateConfirmed();
+            UpdateConfirmed(target);
         }
             else
             {
-                RecordSearchFailed();
+                RecordSearchFailed(target);
             }
     } while (found == false);
 }
 
-void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &prevI, int &paymentStatus)
+void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &prevI, int &paymentStatus, string &target)
 {
     int i;
     bool found; 
@@ -514,11 +514,11 @@ void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &p
 
         if (found == true)
         {
-            UpdateConfirmed();
+            UpdateConfirmed(target);
         }
             else
             {
-                RecordSearchFailed();
+                RecordSearchFailed(target);
             }             
     } while (found == false);
 }
@@ -526,6 +526,7 @@ void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &p
 void CustomerUpdateParent(Customer customerInfo[], Product &productInfo, int &prevI, int &paymentStatus)
 {
     int choice;
+    string target = "Customer";
 
     do
     {
@@ -537,7 +538,7 @@ void CustomerUpdateParent(Customer customerInfo[], Product &productInfo, int &pr
             <<setw(56)<<right<<"[3] Payment Status\n"
             <<setw(45)<<right<<"[4] Back"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(53)<<right<<"Input: ";
+            <<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.clear();
         cin.ignore();
@@ -546,13 +547,13 @@ void CustomerUpdateParent(Customer customerInfo[], Product &productInfo, int &pr
         switch (choice)
         {
             case 1:
-                CustomerUpdateOption1(customerInfo, prevI);
+                CustomerUpdateOption1(customerInfo, prevI, target);
                 break;
             case 2:
-                CustomerUpdateOption2(customerInfo, productInfo, prevI);
+                CustomerUpdateOption2(customerInfo, productInfo, prevI, target);
                 break;
             case 3:
-                CustomerUpdateOption3(customerInfo, productInfo, prevI, paymentStatus);
+                CustomerUpdateOption3(customerInfo, productInfo, prevI, paymentStatus, target);
                 break;
             case 4:
                 cout<<setw(57)<<right<<"Returning..."<<endl;
@@ -578,7 +579,7 @@ void CustomerManagement(Customer customerInfo[], Customer tempInfo[], Product &p
             <<setw(65)<<right<<"[3] Update Customer Data\n"
             <<setw(63)<<right<<"[4] Return to Main Menu"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(53)<<right<<"Input: ";
+            <<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.clear();
         cin.ignore();
@@ -604,6 +605,438 @@ void CustomerManagement(Customer customerInfo[], Customer tempInfo[], Product &p
     } while (choice != 4);
 }
 
+void AddWaterTank(Product &productInfo, int &prevI)
+{
+    int i, latestMonth, upcomingMonth;
+
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+            <<setw(63)<<right<<"| Adding Water Tank Data |"
+            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n";
+
+        for (i = 0; i < 1; i++)
+        {
+            productInfo.tankStorage[i + prevI] = i + prevI + 1;
+
+            cout<<"Tank #"<<productInfo.tankStorage[i] + prevI
+                <<"\nLast Maintenance Date"<<endl;
+
+            do
+            {
+                cout<<"Enter Month (1-12 : 1 for Jan, 12 for Dec...): ";
+                cin>>latestMonth;
+                cin.ignore();
+
+                switch (latestMonth)
+                {
+                    case 1:
+                        productInfo.latestMonth[i + prevI] = JANUARY;
+                        break;
+                    case 2:
+                        productInfo.latestMonth[i + prevI] = FEBRUARY;
+                        break;
+                    case 3:
+                        productInfo.latestMonth[i + prevI] = MARCH;
+                        break;
+                    case 4:
+                        productInfo.latestMonth[i + prevI] = APRIL;
+                        break;
+                    case 5:
+                        productInfo.latestMonth[i + prevI] = MAY;
+                        break;
+                    case 6:
+                        productInfo.latestMonth[i + prevI] = JUNE;
+                        break;
+                    case 7:
+                        productInfo.latestMonth[i + prevI] = JULY;
+                        break;
+                    case 8:
+                        productInfo.latestMonth[i + prevI] = AUGUST;
+                        break;
+                    case 9:
+                        productInfo.latestMonth[i + prevI] = SEPTEMBER;
+                        break;
+                    case 10:
+                        productInfo.latestMonth[i + prevI] = OCTOBER;
+                        break;
+                    case 11:
+                        productInfo.latestMonth[i + prevI] = NOVEMBER;
+                        break;
+                    case 12:
+                        productInfo.latestMonth[i + prevI] = DECEMBER;
+                        break;
+                    default:
+                        RetryStyle();
+                        break;
+                }
+            } while (latestMonth != 1 && latestMonth != 2 && latestMonth != 3 && latestMonth != 4 && latestMonth != 5 && latestMonth != 6 && latestMonth != 7 && latestMonth != 8 && latestMonth != 9 && latestMonth != 10 && latestMonth != 11 && latestMonth != 12);
+            
+            cout<<"Enter Day (1-31): ";
+            getline(cin, productInfo.latestDay[i + prevI]);
+
+            cout<<"Enter Year: ";
+            cin>>productInfo.latestYear[i + prevI];
+
+            while (productInfo.latestYear[i + prevI] < 2000 || productInfo.latestYear[i + prevI] > 9999)
+            {
+                cout<<"---------------------------------------------------------------------------------------------------------\n"
+                    <<setw(64)<<right<<"Invalid Year! Try again.\n"
+                    <<"---------------------------------------------------------------------------------------------------------\n";
+                
+                cout<<"Enter Year: ";
+                cin>>productInfo.latestYear[i + prevI];
+            }
+
+            cout<<"\nUpcoming Maintenance Date"<<endl;
+
+            do
+            {
+                cout<<"Enter Month (1-12 : 1 for Jan, 12 for Dec...): ";
+                cin>>upcomingMonth;
+                cin.ignore();
+
+                switch (upcomingMonth)
+                {
+                    case 1:
+                        productInfo.upcomingMonth[i + prevI] = JANUARY;
+                        break;
+                    case 2:
+                        productInfo.upcomingMonth[i + prevI] = FEBRUARY;
+                        break;
+                    case 3:
+                        productInfo.upcomingMonth[i + prevI] = MARCH;
+                        break;
+                    case 4:
+                        productInfo.upcomingMonth[i + prevI] = APRIL;
+                        break;
+                    case 5:
+                        productInfo.upcomingMonth[i + prevI] = MAY;
+                        break;
+                    case 6:
+                        productInfo.upcomingMonth[i + prevI] = JUNE;
+                        break;
+                    case 7:
+                        productInfo.upcomingMonth[i + prevI] = JULY;
+                        break;
+                    case 8:
+                        productInfo.upcomingMonth[i + prevI] = AUGUST;
+                        break;
+                    case 9:
+                        productInfo.upcomingMonth[i + prevI] = SEPTEMBER;
+                        break;
+                    case 10:
+                        productInfo.upcomingMonth[i + prevI] = OCTOBER;
+                        break;
+                    case 11:
+                        productInfo.upcomingMonth[i + prevI] = NOVEMBER;
+                        break;
+                    case 12:
+                        productInfo.upcomingMonth[i + prevI] = DECEMBER;
+                        break;
+                    default:
+                        RetryStyle();
+                        break;
+                }
+            } while (upcomingMonth != 1 && upcomingMonth != 2 && upcomingMonth != 3 && upcomingMonth != 4 && upcomingMonth != 5 && upcomingMonth != 6 && upcomingMonth != 7 && upcomingMonth != 8 && upcomingMonth != 9 && upcomingMonth != 10 && upcomingMonth != 11 && upcomingMonth != 12);
+            
+            cout<<"Enter Day (1-31): ";
+            getline(cin, productInfo.upcomingDay[i + prevI]);
+
+            cout<<"Enter Year: ";
+            cin>>productInfo.upcomingYear[i + prevI];
+
+            while (productInfo.upcomingYear[i + prevI] < 2000 || productInfo.upcomingYear[i + prevI] > 9999)
+            {
+                cout<<"---------------------------------------------------------------------------------------------------------\n"
+                    <<setw(64)<<right<<"Invalid Year! Try again.\n"
+                    <<"---------------------------------------------------------------------------------------------------------\n";
+                
+                cout<<"Enter Year: ";
+                cin>>productInfo.upcomingYear[i + prevI];
+            }
+        }
+
+        prevI += i;
+}
+
+void LatestMonthDisplay(Product &productInfo, int &i)
+{
+    if (productInfo.latestMonth[i] == JANUARY)
+    {
+        cout<<setw(6)<<right<<" "<<setw(10)<<left<<"JANUARY";
+    }
+        else if (productInfo.latestMonth[i] == FEBRUARY)
+        {
+            cout<<setw(6)<<right<<" "<<setw(10)<<left<<"FEBRUARY";
+        }
+            else if (productInfo.latestMonth[i] == MARCH)
+            {
+                cout<<setw(6)<<right<<" "<<setw(10)<<left<<"MARCH";
+            }
+                else if (productInfo.latestMonth[i] == APRIL)
+                {
+                    cout<<setw(6)<<right<<" "<<setw(10)<<left<<"APRIL";
+                }
+                    else if (productInfo.latestMonth[i] == MAY)
+                    {
+                        cout<<setw(6)<<right<<" "<<setw(10)<<left<<"MAY";
+                    }
+                        else if (productInfo.latestMonth[i] == JUNE)
+                        {
+                            cout<<setw(6)<<right<<" "<<setw(10)<<left<<"JUNE";
+                        }
+                            else if (productInfo.latestMonth[i] == JULY)
+                            {
+                                cout<<setw(6)<<right<<" "<<setw(10)<<left<<"JULY";
+                            }
+                                else if (productInfo.latestMonth[i] == AUGUST)
+                                {
+                                    cout<<setw(6)<<right<<" "<<setw(10)<<left<<"AUGUST";
+                                }
+                                    else if (productInfo.latestMonth[i] == SEPTEMBER)
+                                    {
+                                        cout<<setw(6)<<right<<" "<<setw(10)<<left<<"SEPTEMBER";
+                                    }
+                                        else if (productInfo.latestMonth[i] == OCTOBER)
+                                        {
+                                            cout<<setw(6)<<right<<" "<<setw(10)<<left<<"OCTOBER";
+                                        }
+                                            else if (productInfo.latestMonth[i] == NOVEMBER)
+                                            {
+                                                cout<<setw(6)<<right<<" "<<setw(10)<<left<<"NOVEMBER";
+                                            }
+                                                else if (productInfo.latestMonth[i] == DECEMBER)
+                                                {
+                                                    cout<<setw(6)<<right<<" "<<setw(10)<<left<<"DECEMBER";
+                                                }
+}
+
+void UpcomingMonthDisplay(Product &productInfo, int &i)
+{
+    if (productInfo.upcomingMonth[i] == JANUARY)
+    {
+        cout<<setw(7)<<right<<" "<<setw(10)<<left<<"JANUARY";
+    }
+        else if (productInfo.upcomingMonth[i] == FEBRUARY)
+        {
+            cout<<setw(7)<<right<<" "<<setw(10)<<left<<"FEBRUARY";
+        }
+            else if (productInfo.upcomingMonth[i] == MARCH)
+            {
+                cout<<setw(7)<<right<<" "<<setw(10)<<left<<"MARCH";
+            }
+                else if (productInfo.upcomingMonth[i] == APRIL)
+                {
+                    cout<<setw(7)<<right<<" "<<setw(10)<<left<<"APRIL";
+                }
+                    else if (productInfo.upcomingMonth[i] == MAY)
+                    {
+                        cout<<setw(7)<<right<<" "<<setw(10)<<left<<"MAY";
+                    }
+                        else if (productInfo.upcomingMonth[i] == JUNE)
+                        {
+                            cout<<setw(7)<<right<<" "<<setw(10)<<left<<"JUNE";
+                        }
+                            else if (productInfo.upcomingMonth[i] == JULY)
+                            {
+                                cout<<setw(7)<<right<<" "<<setw(10)<<left<<"JULY";
+                            }
+                                else if (productInfo.upcomingMonth[i] == AUGUST)
+                                {
+                                    cout<<setw(7)<<right<<" "<<setw(10)<<left<<"AUGUST";
+                                }
+                                    else if (productInfo.upcomingMonth[i] == SEPTEMBER)
+                                    {
+                                        cout<<setw(7)<<right<<" "<<setw(10)<<left<<"SEPTEMBER";
+                                    }
+                                        else if (productInfo.upcomingMonth[i] == OCTOBER)
+                                        {
+                                            cout<<setw(7)<<right<<" "<<setw(10)<<left<<"OCTOBER";
+                                        }
+                                            else if (productInfo.upcomingMonth[i] == NOVEMBER)
+                                            {
+                                                cout<<setw(7)<<right<<" "<<setw(10)<<left<<"NOVEMBER";
+                                            }
+                                                else if (productInfo.upcomingMonth[i] == DECEMBER)
+                                                {
+                                                    cout<<setw(7)<<right<<" "<<setw(10)<<left<<"DECEMBER";
+                                                }
+}
+    
+void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
+{
+    bool found;
+    int search, upcomingMonth;
+    
+    do
+    {
+        found = false;
+
+        cout<<"Enter tank number to update data: ";
+        cin>>search;
+        cin.ignore();
+
+        for (i = 0; i < prevI; i++)
+        {   
+            if (search == productInfo.tankStorage[i])
+            {   
+                found = true;
+                cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                    <<setw(62)<<"Data you're about to update:\n"
+                    <<"---------------------------------------------------------------------------------------------------------\n"
+                    <<setw(48)<<right<<"Tank #"<<productInfo.tankStorage[i]<<"\n"
+                    <<setw(45)<<right<<"Last Maintenance Date"<<setw(29)<<right<<"Upcoming Maintenance Date\n"
+                    <<setw(18)<<right<<" ";
+
+                    LatestMonthDisplay(productInfo, i);
+                    cout<<setw(3)<<left<<productInfo.latestDay[i]<<setw(4)<<left<<productInfo.latestYear[i];
+
+                    UpcomingMonthDisplay(productInfo, i);
+                    cout<<setw(3)<<left<<productInfo.upcomingDay[i]<<productInfo.upcomingYear[i];
+
+                cout<<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
+
+                productInfo.latestMonth[i] = productInfo.upcomingMonth[i];
+                productInfo.latestDay[i] = productInfo.upcomingDay[i];
+                productInfo.latestYear[i] = productInfo.upcomingYear[i]; 
+
+                cout<<"Update Upcoming Maintenance Date"<<endl;
+
+                do
+                {
+                    cout<<"Enter Month (1-12 : 1 for Jan, 12 for Dec...): ";
+                    cin>>upcomingMonth;
+                    cin.ignore();
+
+                    switch (upcomingMonth)
+                    {
+                        case 1:
+                            productInfo.upcomingMonth[i] = JANUARY;
+                            break;
+                        case 2:
+                            productInfo.upcomingMonth[i] = FEBRUARY;
+                            break;
+                        case 3:
+                            productInfo.upcomingMonth[i] = MARCH;
+                            break;
+                        case 4:
+                            productInfo.upcomingMonth[i] = APRIL;
+                            break;
+                        case 5:
+                            productInfo.upcomingMonth[i] = MAY;
+                            break;
+                        case 6:
+                            productInfo.upcomingMonth[i] = JUNE;
+                            break;
+                        case 7:
+                            productInfo.upcomingMonth[i] = JULY;
+                            break;
+                        case 8:
+                            productInfo.upcomingMonth[i] = AUGUST;
+                            break;
+                        case 9:
+                            productInfo.upcomingMonth[i] = SEPTEMBER;
+                            break;
+                        case 10:
+                            productInfo.upcomingMonth[i] = OCTOBER;
+                            break;
+                        case 11:
+                            productInfo.upcomingMonth[i] = NOVEMBER;
+                            break;
+                        case 12:
+                            productInfo.upcomingMonth[i] = DECEMBER;
+                            break;
+                        default:
+                            RetryStyle();
+                            break;
+                    }
+                } while (upcomingMonth != 1 && upcomingMonth != 2 && upcomingMonth != 3 && upcomingMonth != 4 && upcomingMonth != 5 && upcomingMonth != 6 && upcomingMonth != 7 && upcomingMonth != 8 && upcomingMonth != 9 && upcomingMonth != 10 && upcomingMonth != 11 && upcomingMonth != 12);
+                
+                cout<<"Enter Day (1-31): ";
+                getline(cin, productInfo.upcomingDay[i]);
+
+                cout<<"Enter Year: ";
+                cin>>productInfo.upcomingYear[i];
+
+                while (productInfo.upcomingYear[i] < 2000 || productInfo.upcomingYear[i] > 9999)
+                {
+                    cout<<"---------------------------------------------------------------------------------------------------------\n"
+                        <<setw(64)<<right<<"Invalid Year! Try again.\n"
+                        <<"---------------------------------------------------------------------------------------------------------\n";
+                    
+                    cout<<"Enter Year: ";
+                    cin>>productInfo.upcomingYear[i];
+                }
+            }
+        }
+
+        if (found == true)
+        {
+            cout<<"---------------------------------------------------------------------------------------------------------\n"
+                <<setw(59)<<right<<"Tank record updated!\n"
+                <<"---------------------------------------------------------------------------------------------------------"<<endl;
+        }
+            else
+            {
+                cout<<"---------------------------------------------------------------------------------------------------------\n"
+                    <<setw(61)<<"Tank record not found!\n"
+                    <<"---------------------------------------------------------------------------------------------------------"<<endl;
+
+                break;
+            }             
+    } while (found == false);
+}
+
+void WaterTankMaintenanceData(Product &productInfo, int &prevI)
+{
+    int i, choice;
+
+    do 
+    {
+        cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                <<setw(62)<<right<<"| Water Tank(s) Information |"
+                <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                <<setw(28)<<right<<"Tank #"<<setw(25)<<right<<"Last Maintenance Date"<<setw(29)<<right<<"Upcoming Maintenance Date\n"
+                <<"---------------------------------------------------------------------------------------------------------\n";
+
+                for(i = 0; i < prevI; i++)
+                {
+                    cout<<setw(26)<<right<<productInfo.tankStorage[i];
+                    
+                    LatestMonthDisplay(productInfo, i);
+                    cout<<setw(3)<<left<<productInfo.latestDay[i]<<setw(4)<<left<<productInfo.latestYear[i];
+
+                    UpcomingMonthDisplay(productInfo, i);
+                    cout<<setw(3)<<left<<productInfo.upcomingDay[i]<<productInfo.upcomingYear[i];
+
+                    cout<<endl;
+                }
+                
+            cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
+                <<setw(29)<<right<<"[1] Back"<<setw(22)<<right<<"[2] Add Water Tank"<<setw(31)<<right<<"[3] Update Maintenance Date\n"
+                <<"---------------------------------------------------------------------------------------------------------\n"
+                <<setw(50)<<right<<"Input: ";
+            cin>>choice;
+            cin.ignore();
+            cout<<"---------------------------------------------------------------------------------------------------------\n";
+
+        switch (choice)
+        {
+            case 1:
+                cout<<setw(57)<<right<<"Returning..."<<endl;
+                break;
+            case 2:
+                AddWaterTank(productInfo, prevI);
+                break;
+            case 3:
+                UpdateMaintenanceData(productInfo, prevI, i);
+                break;
+            default:
+                RetryStyle();
+                break;
+        }
+    } while (choice != 1);
+}
+
 void DisplayGallonRecords(Product &productInfo)
 {
     int i, choice;
@@ -625,7 +1058,7 @@ void DisplayGallonRecords(Product &productInfo)
             <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
             <<"\n[1] Back"
             <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
-        cout<<setw(53)<<right<<"Input: ";
+        cout<<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.ignore();
         cout<<"---------------------------------------------------------------------------------------------------------\n";
@@ -642,7 +1075,7 @@ void DisplayGallonRecords(Product &productInfo)
     } while (choice != 1);
 }
 
-void ProductManagement(Product &productInfo)
+void ProductManagement(Product &productInfo, int &prevI)
 {
     int i, choice;
 
@@ -656,7 +1089,7 @@ void ProductManagement(Product &productInfo)
             <<setw(55)<<right<<"[3] Sales Records\n"
             <<setw(61)<<right<<"[4] Return to Main Menu\n"
             <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(53)<<right<<"Input: ";
+            <<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.clear();
         cin.ignore();
@@ -665,7 +1098,7 @@ void ProductManagement(Product &productInfo)
         switch(choice)
         {
             case 1:
-
+                WaterTankMaintenanceData(productInfo, prevI);
                 break;
             case 2:
                 DisplayGallonRecords(productInfo);
@@ -716,10 +1149,10 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
 
         for (i = 0; i < size; i++)
         {
-            employeeInfo[i].employeeRecordNum =  i + prevI + 1;
+            employeeInfo[i + prevI].employeeRecordNum =  i + prevI + 1;
               
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                <<setw(59)<<right<<"Employee Record #"<<employeeInfo[i].employeeRecordNum
+                <<setw(59)<<right<<"Employee Record #"<<employeeInfo[i].employeeRecordNum + prevI
                 <<"\nEnter employee's surname: ";
             getline(cin, employeeInfo[i + prevI].lastName);
 
@@ -878,7 +1311,7 @@ void DisplayEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prev
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
             <<"\n"<<setw(29)<<right<<"[1] Back"<<setw(32)<<right<<"[2] Sort By Last Name (A-Z)"<<setw(32)<<right<<"[3] Sort By Last Name (Z-A)"
             <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
-        cout<<setw(53)<<right<<"Input: ";
+        cout<<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.ignore();
         cout<<"---------------------------------------------------------------------------------------------------------\n";
@@ -901,7 +1334,7 @@ void DisplayEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prev
     } while (choice != 1);
 }
 
-void EmployeeUpdateOption1(Employee employeeInfo[], int &prevI)
+void EmployeeUpdateOption1(Employee employeeInfo[], int &prevI, string &target)
 {
     int i;
     bool found;
@@ -927,7 +1360,7 @@ void EmployeeUpdateOption1(Employee employeeInfo[], int &prevI)
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
                     <<"---------------------------------------------------------------------------------------------------------\n"
-                    <<setw(57)<<right<<"Customer #"<<employeeInfo[i].employeeRecordNum
+                    <<setw(57)<<right<<"Employee #"<<employeeInfo[i].employeeRecordNum
                     <<"\n"<<setw(46)<<right<<"Surname: "<<employeeInfo[i].lastName
                     <<"\n"<<setw(49)<<right<<"First Name: "<<employeeInfo[i].firstName
                     <<"\n"<<setw(53)<<right<<"Middle Initial: "<<employeeInfo[i].middleInitial
@@ -954,16 +1387,16 @@ void EmployeeUpdateOption1(Employee employeeInfo[], int &prevI)
 
         if (found == true)
         {
-            UpdateConfirmed();
+            UpdateConfirmed(target);
         }
             else
             {
-                RecordSearchFailed();
+                RecordSearchFailed(target);
             }
     } while (found == false);
 }
 
-void EmployeeUpdateOption2(Employee employeeInfo[], int &prevI, int &sex)
+void EmployeeUpdateOption2(Employee employeeInfo[], int &prevI, int &sex, string &target)
 {
     int i;
     bool found; 
@@ -1027,16 +1460,16 @@ void EmployeeUpdateOption2(Employee employeeInfo[], int &prevI, int &sex)
 
         if (found == true)
         {
-            UpdateConfirmed();
+            UpdateConfirmed(target);
         }
             else
             {
-                RecordSearchFailed();
+                RecordSearchFailed(target);
             }             
     } while (found == false);
 }
 
-void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role)
+void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role, string &target)
 {
     int i;
     bool found;
@@ -1100,11 +1533,11 @@ void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role)
 
         if (found == true)
         {
-            UpdateConfirmed();
+            UpdateConfirmed(target);
         }
             else
             {
-                RecordSearchFailed();
+                RecordSearchFailed(target);
             }             
     } while (found == false);
 }
@@ -1112,18 +1545,19 @@ void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role)
 void EmployeeUpdateParent(Employee emplooyeInfo[], int &prevI, int &sex, int &role)
 {
     int choice;
+    string target = "Employee";
 
     do
     {
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(65)<<right<<"| Select Field to Update |"
             <<"\n-----=====-----=====-----=====-----=====-----=====-----=   ====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(71)<<right<<"[1] Customer Name/Address/Phone #\n"
+            <<setw(71)<<right<<"[1] Employee Name/Address/Phone #\n"
             <<setw(54)<<right<<"[2] Employee Sex\n"
             <<setw(69)<<right<<"[3] Employee Role/Work Position\n"
             <<setw(45)<<right<<"[4] Back"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(53)<<right<<"Input: ";
+            <<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.clear();
         cin.ignore();
@@ -1132,13 +1566,13 @@ void EmployeeUpdateParent(Employee emplooyeInfo[], int &prevI, int &sex, int &ro
         switch (choice)
         {
             case 1:
-                EmployeeUpdateOption1(emplooyeInfo, prevI);
+                EmployeeUpdateOption1(emplooyeInfo, prevI, target);
                 break;
             case 2:
-                EmployeeUpdateOption2(emplooyeInfo, prevI, sex);
+                EmployeeUpdateOption2(emplooyeInfo, prevI, sex, target);
                 break;
             case 3:
-                EmployeeUpdateOption3(emplooyeInfo, prevI, role);
+                EmployeeUpdateOption3(emplooyeInfo, prevI, role, target);
                 break;
             case 4:
                 cout<<setw(57)<<right<<"Returning..."<<endl;
@@ -1164,7 +1598,7 @@ void EmployeeManagement(Employee employeeInfo[], Employee tempInfo[], int &prevI
             <<setw(64)<<right<<"[3] Update Employee Data\n"
             <<setw(63)<<right<<"[4] Return to Main Menu\n"
             <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(53)<<right<<"Input: ";
+            <<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.clear();
         cin.ignore();
@@ -1191,7 +1625,7 @@ void EmployeeManagement(Employee employeeInfo[], Employee tempInfo[], int &prevI
     } while (choice != 4);
 }
 
-void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeInfo[], Customer custTempInfo[],  Employee empTempInfo[], int &custPrevI, int &empPrevI)
+void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeInfo[], Customer custTempInfo[],  Employee empTempInfo[], int &custPrevI, int &prodPrevI, int &empPrevI)
 {
     int choice;
 
@@ -1205,7 +1639,7 @@ void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeIn
             <<setw(62)<<right<<"[3] Employee Records\n"
             <<setw(57)<<right<<"[4] Exit Program"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(53)<<right<<"Input: ";
+            <<setw(50)<<right<<"Input: ";
         cin>>choice;
         cin.clear();
         cin.ignore();
@@ -1213,7 +1647,7 @@ void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeIn
         switch(choice)
         {
             case 1:
-                ProductManagement(productInfo);
+                ProductManagement(productInfo, prodPrevI);
                 break;
             case 2:
                 CustomerManagement(customerInfo, custTempInfo, productInfo, custPrevI);
@@ -1223,7 +1657,7 @@ void MainMenu(Customer customerInfo[], Product &productInfo, Employee employeeIn
                 break;
             case 4:
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                <<setw(58)<<"See you again!"
+                <<setw(55)<<"See you again!"
                 <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
                 break;
             default:
@@ -1237,11 +1671,11 @@ int main()
 {
     Customer customerInformation[50], custTempInfo[50]; // declare all needed struct/variables/arrays here so all of the value/data persists even if functions end,
     Product productInformation; // only does it stop persisting after the program ends.
-    Employee employeeInfromation[50], empTempInfo[50]; // array size is 50 maximum per struct, it's just for a case study after all, it makes the program light :D
+    Employee employeeInfromation[50], empTempInfo[50]; // array size is 50 maximum per struct/members, it's just for a case study after all, it makes the program light :D
 
-    int customerPrevI, employeePrevI;
+    int customerPrevI, prodPrevI, employeePrevI;
 
-    MainMenu(customerInformation, productInformation, employeeInfromation, custTempInfo, empTempInfo, customerPrevI, employeePrevI);
+    MainMenu(customerInformation, productInformation, employeeInfromation, custTempInfo, empTempInfo, customerPrevI, prodPrevI, employeePrevI);
 
     return EXIT_SUCCESS;
 }
