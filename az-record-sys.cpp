@@ -760,6 +760,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
             {
                 cout<<"Enter Month (1-12 : 1 for Jan, 12 for Dec...): ";
                 cin>>latestMonth;
+                cin.clear();
                 cin.ignore();
 
                 switch (latestMonth)
@@ -808,6 +809,8 @@ void AddWaterTank(Product &productInfo, int &prevI)
 
             cout<<"Enter Day (1-31): ";
             cin>>productInfo.latestDay[i + prevI];
+            cin.clear();
+            cin.ignore();
 
             while (productInfo.latestDay[i] <= 0 || productInfo.latestDay[i] > 31)
                 {
@@ -830,6 +833,8 @@ void AddWaterTank(Product &productInfo, int &prevI)
 
                 cout<<"Enter Year: ";
                 cin>>productInfo.latestYear[i + prevI];
+                cin.clear();
+                cin.ignore();
             }
 
             cout<<"\nUpcoming Maintenance Date"<<endl;
@@ -838,6 +843,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
             {
                 cout<<"Enter Month (1-12 : 1 for Jan, 12 for Dec...): ";
                 cin>>upcomingMonth;
+                cin.clear();
                 cin.ignore();
 
                 switch (upcomingMonth)
@@ -886,6 +892,8 @@ void AddWaterTank(Product &productInfo, int &prevI)
 
             cout<<"Enter Day (1-31): ";
             cin>>productInfo.upcomingDay[i + prevI];
+            cin.clear();
+            cin.ignore();
 
             while (productInfo.upcomingDay[i] <= 0 || productInfo.upcomingDay[i] > 31)
                 {
@@ -895,10 +903,14 @@ void AddWaterTank(Product &productInfo, int &prevI)
 
                     cout<<"Enter Day (1-31): ";
                     cin>>productInfo.upcomingDay[i];
+                    cin.clear();
+                    cin.ignore();
                 }
 
             cout<<"Enter Year: ";
             cin>>productInfo.upcomingYear[i + prevI];
+            cin.clear();
+            cin.ignore();
 
             while (productInfo.upcomingYear[i + prevI] < 2000 || productInfo.upcomingYear[i + prevI] > 9999)
             {
@@ -908,6 +920,8 @@ void AddWaterTank(Product &productInfo, int &prevI)
 
                 cout<<"Enter Year: ";
                 cin>>productInfo.upcomingYear[i + prevI];
+                cin.clear();
+                cin.ignore();
             }
         }
 
@@ -1590,11 +1604,11 @@ void EmployeeUpdateOption2(Employee employeeInfo[], int &prevI, int &sex, string
 
                 if (employeeInfo[i].sex == MALE)
                 {
-                    cout<<"\n"<<setw(64)<<right<<"Sex: MALE"<<endl;
+                    cout<<"\n"<<setw(53)<<right<<"Sex: MALE"<<endl;
                 }
                     else if (employeeInfo[i].sex == FEMALE)
                     {
-                        cout<<"\n"<<setw(64)<<right<<"Sex: FEMALE"<<endl;
+                        cout<<"\n"<<setw(53)<<right<<"Sex: FEMALE"<<endl;
                     }
 
                 cout<<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
@@ -1663,11 +1677,11 @@ void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role, strin
 
                 if (employeeInfo[i].position == DRIVER)
                 {
-                    cout<<"\n"<<setw(64)<<right<<"Position: DRIVER"<<endl;
+                    cout<<"\n"<<setw(61)<<right<<"Position: DRIVER"<<endl;
                 }
                     else if (employeeInfo[i].position == REFILLER)
                     {
-                        cout<<"\n"<<setw(64)<<right<<"Position: REFILLER"<<endl;
+                        cout<<"\n"<<setw(61)<<right<<"Position: REFILLER"<<endl;
                     }
 
                 cout<<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
@@ -1715,7 +1729,7 @@ void EmployeeUpdateParent(Employee emplooyeInfo[], int &prevI, int &sex, int &ro
     {
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(65)<<right<<"| Select Field to Update |"
-            <<"\n-----=====-----=====-----=====-----=====-----=====-----=   ====-----=====-----=====-----=====-----=====-----\n"
+            <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(71)<<right<<"[1] Employee Name/Address/Phone #\n"
             <<setw(54)<<right<<"[2] Employee Sex\n"
             <<setw(69)<<right<<"[3] Employee Role/Work Position\n"
