@@ -147,7 +147,7 @@ void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], Product &prod
         cout<<"Enter customer's middle initial: ";
         getline(cin, customerInfo[i + prevI].middleInitial);
 
-        cout<<"Enter customer's address (barangy & purok): ";
+        cout<<"Enter customer's address (barangay & purok): ";
         getline(cin, customerInfo[i + prevI].address);
             
         cout<<"Enter employee's phone number (format: 09---------): ";
@@ -580,6 +580,7 @@ void CustomerManagement(Customer customerInfo[], Customer tempInfo[], Product &p
         cin>>choice;
         cin.clear();
         cin.ignore();
+        cout<<"---------------------------------------------------------------------------------------------------------\n";
 
         switch(choice)
         {
@@ -718,7 +719,7 @@ void DisplaySales(Product &productInfo, Sales salesInfo[])
 
         cout<<"---------------------------------------------------------------------------------------------------------"
             <<setw(11)<<right<<"\nCURRENT PRICE PER GALLON : ₱"<<PRICE
-            <<"\nNOTE: NUMBERS ABOVE ARE HOW MANY GALLONS SOLD PER WEEK. NOT ACTUAL PESOS PRICE."
+            <<"\nNOTE: NUMBERS ABOVE DESCRIBE HOW MANY GALLONS SOLD PER WEEK. NOT ACTUAL PESOS PRICE."
             <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
             <<"\n"<<setw(43)<<right<<"[1] Back"<<setw(24)<<right<<"[2] Add/Update Sales"
             <<"\n---------------------------------------------------------------------------------------------------------"<<endl;
@@ -1249,7 +1250,7 @@ void ProductManagement(Product &productInfo, Sales salesInfo[], int &prevI)
     do
     {
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(62)<<right<<"| Inventory Management |"
+            <<setw(61)<<right<<"| Product Management |"
             <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(64)<<right<<"[1] Water Tank Maintenance\n"
             <<setw(56)<<right<<"[2] Gallon Records\n"
@@ -1329,7 +1330,7 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
             cout<<"Enter employee's middle initial: ";
             getline(cin, employeeInfo[i + prevI].middleInitial);
 
-            cout<<"Enter employee's address (barangy & purok): ";
+            cout<<"Enter employee's address (barangay & purok): ";
             getline(cin, employeeInfo[i + prevI].address);
                         
             cout<<"Enter employee's phone number (format: 09---------): ";
@@ -1801,10 +1802,10 @@ void MainMenu(Customer customerInfo[], Product &productInfo, Sales salesInfo[], 
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(71)<<right<<"| AquaZeb Water Refilling Station |\n"
             <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(64)<<right<<"[1] Product Management\n"
-            <<setw(62)<<right<<"[2] Customer Records\n"
-            <<setw(62)<<right<<"[3] Employee Records\n"
-            <<setw(57)<<right<<"[4] Exit Program"<<endl;
+            <<setw(63)<<right<<"[1] Product Management\n"
+            <<setw(61)<<right<<"[2] Customer Records\n"
+            <<setw(61)<<right<<"[3] Employee Records\n"
+            <<setw(56)<<right<<"[4] Exit Program"<<endl;
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(50)<<right<<"Input: ";
         cin>>choice;
