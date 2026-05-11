@@ -131,13 +131,13 @@ void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], Product &prod
         cin.clear();
         cin.ignore();
     }
-    
+
     for (i = 0; i < size; i++)
     {
         customerInfo[i + prevI].customerRecordNum =  i + prevI + 1;
 
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-            <<setw(59)<<right<<"Customer Record #"<<customerInfo[i].customerRecordNum + prevI
+            <<setw(59)<<right<<"Customer Record #"<<customerInfo[i + prevI].customerRecordNum
             <<"\nEnter customer's surname: ";
         getline(cin, customerInfo[i + prevI].lastName);
 
@@ -149,7 +149,7 @@ void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], Product &prod
 
         cout<<"Enter customer's address (barangay & purok): ";
         getline(cin, customerInfo[i + prevI].address);
-            
+
         cout<<"Enter employee's phone number (format: 09---------): ";
         getline(cin, customerInfo[i + prevI].phoneNumber);
 
@@ -175,7 +175,7 @@ void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], Product &prod
             cin>>paymentStatus;
             cin.clear();
             cin.ignore();
-            
+
             switch (paymentStatus)
             {
                 case 1:
@@ -202,43 +202,39 @@ void AddCustomerInfo(Customer customerInfo[], Customer tempInfo[], Product &prod
         <<setw(71)<<right<<"Customer Record(s) Added Successfully!"<<endl;
 }
 
-void SortCustDesLastName(Customer customerInfo[], Customer tempInfo[], int &prevI)
+void SortCustDesLastName(Customer tempInfo[], int &prevI)
 {
     int x, y;
     Customer temp;
-
-    CustomerOriginalCopy(customerInfo, tempInfo, prevI);
 
     for (x = 0; x < prevI - 1; x++)
     {
         for (y = 0; y < prevI - 1 - x; y++)
         {
-            if(customerInfo[y].lastName < customerInfo[y + 1].lastName)
+            if(tempInfo[y].lastName < tempInfo[y + 1].lastName)
             {
-                temp = customerInfo[y];
-                customerInfo[y] = customerInfo[y + 1];
-                customerInfo[y + 1] = temp;
+                temp = tempInfo[y];
+                tempInfo[y] = tempInfo[y + 1];
+                tempInfo[y + 1] = temp;
             }
         }
-    } 
+    }
 }
 
-void SortCustAscLastName(Customer customerInfo[], Customer tempInfo[], int &prevI)
+void SortCustAscLastName(Customer tempInfo[], int &prevI)
 {
     int x, y;
     Customer temp;
-
-    CustomerOriginalCopy(customerInfo, tempInfo, prevI);
 
     for (x = 0; x < prevI - 1; x++)
     {
         for (y = 0; y < prevI - 1 - x; y++)
         {
-            if(customerInfo[y].lastName > customerInfo[y + 1].lastName)
+            if(tempInfo[y].lastName > tempInfo[y + 1].lastName)
             {
-                temp = customerInfo[y];
-                customerInfo[y] = customerInfo[y + 1];
-                customerInfo[y + 1] = temp;
+                temp = tempInfo[y];
+                tempInfo[y] = tempInfo[y + 1];
+                tempInfo[y + 1] = temp;
             }
         }
     }
@@ -247,6 +243,8 @@ void SortCustAscLastName(Customer customerInfo[], Customer tempInfo[], int &prev
 void DisplayCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prevI)
 {
     int i, choice;
+
+    CustomerOriginalCopy(customerInfo, tempInfo, prevI);
 
     do
     {
@@ -258,19 +256,19 @@ void DisplayCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prev
 
         for (i = 0; i < prevI; i++)
         {
-            cout<<setw(6)<<left<<customerInfo[i].customerRecordNum
-                <<setw(10)<<left<<customerInfo[i].lastName
-                <<setw(16)<<left<<customerInfo[i].firstName
-                <<setw(5)<<left<<customerInfo[i].middleInitial
-                <<setw(30)<<left<<customerInfo[i].address
-                <<setw(13)<<left<<customerInfo[i].phoneNumber
-                <<setw(9)<<left<<customerInfo[i].gallonsOwnedQty;
+            cout<<setw(6)<<left<<tempInfo[i].customerRecordNum
+                <<setw(10)<<left<<tempInfo[i].lastName
+                <<setw(16)<<left<<tempInfo[i].firstName
+                <<setw(5)<<left<<tempInfo[i].middleInitial
+                <<setw(30)<<left<<tempInfo[i].address
+                <<setw(13)<<left<<tempInfo[i].phoneNumber
+                <<setw(9)<<left<<tempInfo[i].gallonsOwnedQty;
 
-            if (customerInfo[i].paymentStatus == PAID)
+            if (tempInfo[i].paymentStatus == PAID)
             {
                 cout<<"PAID"<<endl;
             }
-                else if (customerInfo[i].paymentStatus == UNPAID)
+                else if (tempInfo[i].paymentStatus == UNPAID)
                 {
                     cout<<"UNPAID"<<endl;
                 }
@@ -290,10 +288,10 @@ void DisplayCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prev
                 cout<<setw(57)<<right<<"Returning..."<<endl;
                 break;
             case 2:
-                SortCustAscLastName(customerInfo, tempInfo, prevI);
+                SortCustAscLastName(tempInfo, prevI);
                 break;
             case 3:
-                SortCustDesLastName(customerInfo, tempInfo, prevI);
+                SortCustDesLastName(tempInfo, prevI);
                 break;
             default:
                 RetryStyle();
@@ -305,7 +303,7 @@ void DisplayCustomerInfo(Customer customerInfo[], Customer tempInfo[], int &prev
 void CustomerUpdateOption1(Customer customerInfo[], int &prevI, string &target)
 {
     int i;
-    bool found; 
+    bool found;
     string search;
 
     do
@@ -314,16 +312,16 @@ void CustomerUpdateOption1(Customer customerInfo[], int &prevI, string &target)
 
         cout<<"Enter customer's Surname/First name to update data (1 - Cancel): ";
         getline(cin, search);
-        
+
         if (search == "1")
         {
             break;
         }
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == customerInfo[i].lastName || search == customerInfo[i].firstName)
-            {   
+            {
                 found = true;
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
@@ -367,7 +365,7 @@ void CustomerUpdateOption1(Customer customerInfo[], int &prevI, string &target)
 void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &prevI, string &target)
 {
     int i, oldValue, update;
-    bool found; 
+    bool found;
     string search;
 
     do
@@ -376,16 +374,16 @@ void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &p
 
         cout<<"Enter customer's Surname/First name to update data (1 - Cancel): ";
         getline(cin, search);
-        
+
         if (search == "1")
         {
             break;
         }
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == customerInfo[i].lastName || search == customerInfo[i].firstName)
-            {   
+            {
                 found = true;
 
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
@@ -396,7 +394,7 @@ void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &p
                     <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"<<endl;
 
                 oldValue = customerInfo[i].gallonsOwnedQty;
-                
+
                 cout<<"Update gallon ownership: ";
                 cin>>customerInfo[i].gallonsOwnedQty;
                 cin.clear();
@@ -407,7 +405,7 @@ void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &p
                     cout<<"---------------------------------------------------------------------------------------------------------\n"
                         <<setw(65)<<right<<"Invalid quantity! Try again.\n"
                         <<"---------------------------------------------------------------------------------------------------------"<<endl;
-                    
+
                     cout<<"Update gallon ownership: ";
                     cin>>customerInfo[i].gallonsOwnedQty;
                     cin.clear();
@@ -424,7 +422,7 @@ void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &p
                     {
                         productInfo.unpaidGallons += update;
                     }
-                    
+
                 productInfo.distributedGallonQty = productInfo.paidGallons + productInfo.unpaidGallons;
             }
         }
@@ -443,25 +441,25 @@ void CustomerUpdateOption2(Customer customerInfo[], Product &productInfo, int &p
 void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &prevI, int &paymentStatus, string &target)
 {
     int i;
-    bool found; 
+    bool found;
     string search;
-    
+
     do
     {
         found = false;
 
         cout<<"Enter customer's Surname/First name to update data (1 - Cancel): ";
         getline(cin, search);
-        
+
         if (search == "1")
         {
             break;
         }
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == customerInfo[i].lastName || search == customerInfo[i].firstName)
-            {   
+            {
                 found = true;
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
@@ -471,7 +469,7 @@ void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &p
                 if (customerInfo[i].paymentStatus == PAID)
                 {
                     cout<<"\n"<<setw(64)<<right<<"Payment Status: PAID"<<endl;
-                    
+
                 }
                     else if (customerInfo[i].paymentStatus == UNPAID)
                     {
@@ -516,7 +514,7 @@ void CustomerUpdateOption3(Customer customerInfo[], Product &productInfo, int &p
             else
             {
                 RecordSearchFailed(target);
-            }             
+            }
     } while (found == false);
 }
 
@@ -557,7 +555,7 @@ void CustomerUpdateParent(Customer customerInfo[], Product &productInfo, int &pr
                 break;
             default:
                 RetryStyle();
-                break;  
+                break;
         }
     } while (choice != 4);
 }
@@ -617,7 +615,7 @@ void UpdateSales(Product &productInfo, Sales salesInfo[], int &monthlySales, int
 
     while (week < 1 || week > 4)
     {
-        RetryStyle();   
+        RetryStyle();
 
         cout<<"Which week do you want to update? (1 - 4): ";
         cin>>week;
@@ -688,7 +686,7 @@ void DisplaySales(Product &productInfo, Sales salesInfo[])
             <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(30)<<right<<"Month"<<setw(13)<<right<<"Week #1"<<setw(12)<<right<<"Week #2"<<setw(10)<<right<<"Week #3"<<setw(12)<<right<<"Week #4\n"
             <<"---------------------------------------------------------------------------------------------------------"<<endl;
-        
+
             // had to write every month and week manually, using loops would actually take so much more effort compared to doing this. week 0 is week 1 and so forth, saleInfo 0 is january and so forth.
             cout<<setw(25)<<right<<" "<<setw(11)<<left<<"JANUARY"<<setw(11)<<left<<salesInfo[0].week[0]<<setw(11)<<left<<salesInfo[0].week[1]<<setw(11)<<left<<salesInfo[0].week[2]<<setw(11)<<left<<salesInfo[0].week[3]<<"\n"
                 <<setw(25)<<right<<" "<<setw(11)<<left<<"FEBRUARY"<<setw(11)<<left<<salesInfo[1].week[0]<<setw(11)<<left<<salesInfo[1].week[1]<<setw(11)<<left<<salesInfo[1].week[2]<<setw(11)<<left<<salesInfo[1].week[3]<<"\n"
@@ -710,15 +708,15 @@ void DisplaySales(Product &productInfo, Sales salesInfo[])
             for (y = 0; y < 4; y++)
             {
                 // both formulas for bonus pts, sub total is monthlySales and grand total is totalSales.
-                monthlySales = salesInfo[x].week[y] * PRICE; 
+                monthlySales = salesInfo[x].week[y] * PRICE;
                 totalSales += monthlySales;
             }
         }
 
-        cout<<setw(11)<<right<<"TOTAL SALES THIS YEAR: ₱"<<totalSales<<endl;
+        cout<<setw(11)<<right<<"TOTAL SALES THIS YEAR: P"<<totalSales<<endl;
 
         cout<<"---------------------------------------------------------------------------------------------------------"
-            <<setw(11)<<right<<"\nCURRENT PRICE PER GALLON : ₱"<<PRICE
+            <<setw(11)<<right<<"\nCURRENT PRICE PER GALLON : P"<<PRICE
             <<"\nNOTE: NUMBERS ABOVE DESCRIBE HOW MANY GALLONS SOLD PER WEEK. NOT ACTUAL PESOS PRICE."
             <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
             <<"\n"<<setw(43)<<right<<"[1] Back"<<setw(24)<<right<<"[2] Add/Update Sales"
@@ -807,7 +805,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
                         break;
                 }
             } while (latestMonth != 1 && latestMonth != 2 && latestMonth != 3 && latestMonth != 4 && latestMonth != 5 && latestMonth != 6 && latestMonth != 7 && latestMonth != 8 && latestMonth != 9 && latestMonth != 10 && latestMonth != 11 && latestMonth != 12);
-            
+
             cout<<"Enter Day (1-31): ";
             cin>>productInfo.latestDay[i + prevI];
 
@@ -816,7 +814,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
                     cout<<"---------------------------------------------------------------------------------------------------------\n"
                         <<setw(63)<<right<<"Invalid Day! Try again.\n"
                         <<"---------------------------------------------------------------------------------------------------------\n";
-                    
+
                     cout<<"Enter Day (1-31): ";
                     cin>>productInfo.latestDay[i];
                 }
@@ -829,7 +827,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
                 cout<<"---------------------------------------------------------------------------------------------------------\n"
                     <<setw(64)<<right<<"Invalid Year! Try again.\n"
                     <<"---------------------------------------------------------------------------------------------------------\n";
-                
+
                 cout<<"Enter Year: ";
                 cin>>productInfo.latestYear[i + prevI];
             }
@@ -885,7 +883,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
                         break;
                 }
             } while (upcomingMonth != 1 && upcomingMonth != 2 && upcomingMonth != 3 && upcomingMonth != 4 && upcomingMonth != 5 && upcomingMonth != 6 && upcomingMonth != 7 && upcomingMonth != 8 && upcomingMonth != 9 && upcomingMonth != 10 && upcomingMonth != 11 && upcomingMonth != 12);
-            
+
             cout<<"Enter Day (1-31): ";
             cin>>productInfo.upcomingDay[i + prevI];
 
@@ -894,7 +892,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
                     cout<<"---------------------------------------------------------------------------------------------------------\n"
                         <<setw(63)<<right<<"Invalid Day! Try again.\n"
                         <<"---------------------------------------------------------------------------------------------------------\n";
-                    
+
                     cout<<"Enter Day (1-31): ";
                     cin>>productInfo.upcomingDay[i];
                 }
@@ -907,7 +905,7 @@ void AddWaterTank(Product &productInfo, int &prevI)
                 cout<<"---------------------------------------------------------------------------------------------------------\n"
                     <<setw(64)<<right<<"Invalid Year! Try again.\n"
                     <<"---------------------------------------------------------------------------------------------------------\n";
-                
+
                 cout<<"Enter Year: ";
                 cin>>productInfo.upcomingYear[i + prevI];
             }
@@ -1019,12 +1017,12 @@ void UpcomingMonthDisplay(Product &productInfo, int &i)
                                                     cout<<setw(7)<<right<<" "<<setw(10)<<left<<"DECEMBER";
                                                 }
 }
-    
+
 void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
 {
     bool found;
     int search, upcomingMonth;
-    
+
     do
     {
         found = false;
@@ -1034,9 +1032,9 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
         cin.ignore();
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == productInfo.tankStorage[i])
-            {   
+            {
                 found = true;
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(62)<<"Data you're about to update:\n"
@@ -1055,7 +1053,7 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
 
                 productInfo.latestMonth[i] = productInfo.upcomingMonth[i];
                 productInfo.latestDay[i] = productInfo.upcomingDay[i];
-                productInfo.latestYear[i] = productInfo.upcomingYear[i]; 
+                productInfo.latestYear[i] = productInfo.upcomingYear[i];
 
                 cout<<"Update Upcoming Maintenance Date"<<endl;
 
@@ -1108,7 +1106,7 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
                             break;
                     }
                 } while (upcomingMonth != 1 && upcomingMonth != 2 && upcomingMonth != 3 && upcomingMonth != 4 && upcomingMonth != 5 && upcomingMonth != 6 && upcomingMonth != 7 && upcomingMonth != 8 && upcomingMonth != 9 && upcomingMonth != 10 && upcomingMonth != 11 && upcomingMonth != 12);
-                
+
                 cout<<"Enter Day (1-31): ";
                 cin>>productInfo.upcomingDay[i];
 
@@ -1117,7 +1115,7 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
                     cout<<"---------------------------------------------------------------------------------------------------------\n"
                         <<setw(63)<<right<<"Invalid Day! Try again.\n"
                         <<"---------------------------------------------------------------------------------------------------------\n";
-                    
+
                     cout<<"Enter Day (1-31): ";
                     cin>>productInfo.upcomingDay[i];
                 }
@@ -1130,7 +1128,7 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
                     cout<<"---------------------------------------------------------------------------------------------------------\n"
                         <<setw(64)<<right<<"Invalid Year! Try again.\n"
                         <<"---------------------------------------------------------------------------------------------------------\n";
-                    
+
                     cout<<"Enter Year: ";
                     cin>>productInfo.upcomingYear[i];
                 }
@@ -1150,7 +1148,7 @@ void UpdateMaintenanceData(Product &productInfo, int &prevI, int &i)
                     <<"---------------------------------------------------------------------------------------------------------"<<endl;
 
                 break;
-            }             
+            }
     } while (found == false);
 }
 
@@ -1158,7 +1156,7 @@ void WaterTankMaintenanceData(Product &productInfo, int &prevI)
 {
     int i, choice;
 
-    do 
+    do
     {
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                 <<setw(62)<<right<<"| Water Tank(s) Information |"
@@ -1169,7 +1167,7 @@ void WaterTankMaintenanceData(Product &productInfo, int &prevI)
                 for(i = 0; i < prevI; i++)
                 {
                     cout<<setw(26)<<right<<productInfo.tankStorage[i];
-                    
+
                     LatestMonthDisplay(productInfo, i);
                     cout<<setw(3)<<left<<productInfo.latestDay[i]<<setw(4)<<left<<productInfo.latestYear[i];
 
@@ -1178,7 +1176,7 @@ void WaterTankMaintenanceData(Product &productInfo, int &prevI)
 
                     cout<<endl;
                 }
-                
+
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                 <<setw(29)<<right<<"[1] Back"<<setw(22)<<right<<"[2] Add Water Tank"<<setw(31)<<right<<"[3] Update Maintenance Date\n"
                 <<"---------------------------------------------------------------------------------------------------------\n"
@@ -1214,13 +1212,13 @@ void DisplayGallonRecords(Product &productInfo)
         cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
             <<setw(62)<<"| Gallons Information |\n"
             <<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"<<endl;
-        
+
             cout<<setw(48)<<right<<"Unpaid Gallons: "<<setw(26)<<right<<productInfo.unpaidGallons<<endl;
-    
+
             cout<<setw(46)<<right<<"Paid Gallons: "<<setw(28)<<right<<productInfo.paidGallons<<endl;
-        
+
             cout<<setw(73)<<right<<"Total Gallons Distributed to Customers:  "<<productInfo.distributedGallonQty<<endl;
-        
+
         cout<<"\n---------------------------------------------------------------------------------------------------------"
             <<"\nFor more information, check customer records."
             <<"\n-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----"
@@ -1318,9 +1316,9 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
         for (i = 0; i < size; i++)
         {
             employeeInfo[i + prevI].employeeRecordNum =  i + prevI + 1;
-              
+
             cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
-                <<setw(59)<<right<<"Employee Record #"<<employeeInfo[i].employeeRecordNum + prevI
+                <<setw(59)<<right<<"Employee Record #"<<employeeInfo[i + prevI].employeeRecordNum
                 <<"\nEnter employee's surname: ";
             getline(cin, employeeInfo[i + prevI].lastName);
 
@@ -1332,7 +1330,7 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
 
             cout<<"Enter employee's address (barangay & purok): ";
             getline(cin, employeeInfo[i + prevI].address);
-                        
+
             cout<<"Enter employee's phone number (format: 09---------): ";
             getline(cin, employeeInfo[i + prevI].phoneNumber);
 
@@ -1342,7 +1340,7 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
                 cin>>sex;
                 cin.clear();
                 cin.ignore();
-                
+
                 switch (sex)
                 {
                     case 1:
@@ -1363,7 +1361,7 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
                 cin>>role;
                 cin.clear();
                 cin.ignore();
-                
+
                 switch (role)
                 {
                     case 1:
@@ -1381,57 +1379,55 @@ void AddEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI, i
         EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
     }
 
-    prevI += i; 
+    prevI += i;
 
     cout<<"---------------------------------------------------------------------------------------------------------\n"
         <<setw(71)<<right<<"Employee Record(s) Added Successfully!"<<endl;
 }
 
-void SortEmpDesLastName(Employee employeeInfo[], Employee tempInfo[], int &prevI)
+void SortEmpDesLastName(Employee tempInfo[], int &prevI)
 {
     int x, y;
     Employee temp;
-
-    EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
 
     for (x = 0; x < prevI - 1; x++)
     {
         for (y = 0; y < prevI - 1 - x; y++)
         {
-            if(employeeInfo[y].lastName < employeeInfo[y + 1].lastName)
+            if(tempInfo[y].lastName < tempInfo[y + 1].lastName)
             {
-                temp = employeeInfo[y];
-                employeeInfo[y] = employeeInfo[y + 1];
-                employeeInfo[y + 1] = temp;
+                temp = tempInfo[y];
+                tempInfo[y] = tempInfo[y + 1];
+                tempInfo[y + 1] = temp;
             }
         }
-    } 
+    }
 }
 
-void SortEmpAscLastName(Employee employeeInfo[], Employee tempInfo[], int &prevI)
+void SortEmpAscLastName(Employee tempInfo[], int &prevI)
 {
     int x, y;
     Employee temp;
-
-    EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
 
     for (x = 0; x < prevI - 1; x++)
     {
         for (y = 0; y < prevI - 1 - x; y++)
         {
-            if(employeeInfo[y].lastName > employeeInfo[y + 1].lastName)
+            if(tempInfo[y].lastName > tempInfo[y + 1].lastName)
             {
-                temp = employeeInfo[y];
-                employeeInfo[y] = employeeInfo[y + 1];
-                employeeInfo[y + 1] = temp;
+                temp = tempInfo[y];
+                tempInfo[y] = tempInfo[y + 1];
+                tempInfo[y + 1] = temp;
             }
         }
-    } 
+    }
 }
 
 void DisplayEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prevI)
 {
     int i, choice;
+
+    EmployeeOriginalCopy(employeeInfo, tempInfo, prevI);
 
     do
     {
@@ -1450,27 +1446,27 @@ void DisplayEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prev
 
         for (i = 0; i < prevI; i++)
         {
-            cout<<setw(6)<<left<<employeeInfo[i].employeeRecordNum
-                <<setw(10)<<left<<employeeInfo[i].lastName
-                <<setw(16)<<left<<employeeInfo[i].firstName
-                <<setw(5)<<left<<employeeInfo[i].middleInitial
-                <<setw(30)<<left<<employeeInfo[i].address
-                <<setw(13)<<left<<employeeInfo[i].phoneNumber;
+            cout<<setw(6)<<left<<tempInfo[i].employeeRecordNum
+                <<setw(10)<<left<<tempInfo[i].lastName
+                <<setw(16)<<left<<tempInfo[i].firstName
+                <<setw(5)<<left<<tempInfo[i].middleInitial
+                <<setw(30)<<left<<tempInfo[i].address
+                <<setw(13)<<left<<tempInfo[i].phoneNumber;
 
-        if (employeeInfo[i].sex == MALE)
+        if (tempInfo[i].sex == MALE)
         {
             cout<<setw(13)<<left<<"MALE";
         }
-            else if (employeeInfo[i].sex == FEMALE)
+            else if (tempInfo[i].sex == FEMALE)
             {
                 cout<<setw(13)<<left<<"FEMALE";
             }
 
-        if (employeeInfo[i].position == DRIVER)
+        if (tempInfo[i].position == DRIVER)
         {
             cout<<"DRIVER"<<endl;
         }
-            else if (employeeInfo[i].position == REFILLER)
+            else if (tempInfo[i].position == REFILLER)
             {
                 cout<<"REFILLER"<<endl;
             }
@@ -1490,10 +1486,10 @@ void DisplayEmployeeInfo(Employee employeeInfo[], Employee tempInfo[], int &prev
                 cout<<setw(57)<<right<<"Returning..."<<endl;
                 break;
             case 2:
-                SortEmpAscLastName(employeeInfo, tempInfo, prevI);
+                SortEmpAscLastName(tempInfo, prevI);
                 break;
             case 3:
-                SortEmpDesLastName(employeeInfo, tempInfo, prevI);
+                SortEmpDesLastName(tempInfo, prevI);
                 break;
             default:
                 RetryStyle();
@@ -1514,16 +1510,16 @@ void EmployeeUpdateOption1(Employee employeeInfo[], int &prevI, string &target)
 
         cout<<"Enter employee's surname/first name to update data (1 - Cancel): ";
         getline(cin, search);
-        
+
         if (search == "1")
         {
             break;
         }
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == employeeInfo[i].lastName || search == employeeInfo[i].firstName)
-            {   
+            {
                 found = true;
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
@@ -1567,25 +1563,25 @@ void EmployeeUpdateOption1(Employee employeeInfo[], int &prevI, string &target)
 void EmployeeUpdateOption2(Employee employeeInfo[], int &prevI, int &sex, string &target)
 {
     int i;
-    bool found; 
+    bool found;
     string search;
-    
+
     do
     {
         found = false;
 
         cout<<"Enter customer's surname/first name to update data (1 - Cancel): ";
         getline(cin, search);
-        
+
         if (search == "1")
         {
             break;
         }
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == employeeInfo[i].lastName || search == employeeInfo[i].firstName)
-            {   
+            {
                 found = true;
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
@@ -1633,7 +1629,7 @@ void EmployeeUpdateOption2(Employee employeeInfo[], int &prevI, int &sex, string
             else
             {
                 RecordSearchFailed(target);
-            }             
+            }
     } while (found == false);
 }
 
@@ -1642,23 +1638,23 @@ void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role, strin
     int i;
     bool found;
     string search;
-    
+
     do
     {
         found = false;
 
         cout<<"Enter customer's surname/first name to update data (1 - Cancel): ";
         getline(cin, search);
-        
+
         if (search == "1")
         {
             break;
         }
 
         for (i = 0; i < prevI; i++)
-        {   
+        {
             if (search == employeeInfo[i].lastName || search == employeeInfo[i].firstName)
-            {   
+            {
                 found = true;
                 cout<<"-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----=====-----\n"
                     <<setw(67)<<"Data you're about to update:\n"
@@ -1706,7 +1702,7 @@ void EmployeeUpdateOption3(Employee employeeInfo[], int &prevI, int &role, strin
             else
             {
                 RecordSearchFailed(target);
-            }             
+            }
     } while (found == false);
 }
 
@@ -1747,7 +1743,7 @@ void EmployeeUpdateParent(Employee emplooyeInfo[], int &prevI, int &sex, int &ro
                 break;
             default:
                 RetryStyle();
-                break;  
+                break;
         }
     } while (choice != 4);
 }
@@ -1840,7 +1836,7 @@ int main()
 {
     Customer customerInformation[50], custTempInfo[50]; // declare all needed struct/variables/arrays here so all of the value/data persists even if functions end,
     Product productInformation; // only does it stop persisting after the program ends.
-    Sales salesInformation[50]; // array size is 50 maximum per struct/members, 
+    Sales salesInformation[50]; // array size is 50 maximum per struct/members,
     Employee employeeInfromation[50], empTempInfo[50]; // it's just for a case study after all, it makes the program light :D
 
     int customerPrevI, prodPrevI, employeePrevI;
